@@ -1,11 +1,4 @@
-import {
-  IsEmail,
-  Validate,
-  MinLength,
-  MaxLength,
-  IsString,
-  IsNotEmpty,
-} from 'class-validator';
+import { IsEmail, Validate, MinLength, MaxLength, IsString, IsNotEmpty } from 'class-validator';
 import { IsUserAlreadyExist } from '../user/user.validators';
 import { getValidatorMessage, EMessageType } from '../messages';
 

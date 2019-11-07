@@ -1,19 +1,8 @@
-import {
-  Injectable,
-  BadRequestException,
-  NotFoundException,
-  MethodNotAllowedException,
-  ForbiddenException,
-} from '@nestjs/common';
+import { Injectable, BadRequestException, MethodNotAllowedException, ForbiddenException } from '@nestjs/common';
 import { UserService } from '../user/user.service';
 import { JwtService } from '@nestjs/jwt';
 import { IJwtSignPayload } from './jwt.strategy';
-import {
-  IRegisterRequestDto,
-  IConfirmEmailDto,
-  IPasswordResetRequestDto,
-  IPasswordResetConfirmDto,
-} from './auth.dto';
+import { IRegisterRequestDto, IConfirmEmailDto, IPasswordResetRequestDto, IPasswordResetConfirmDto } from './auth.dto';
 import * as bcrypt from 'bcrypt';
 import { authConstants } from '../constants';
 import { differenceInMilliseconds } from 'date-fns';
@@ -36,11 +25,8 @@ export class AuthService {
     private readonly emailService: EmailService,
   ) {}
 
-  async validateUser(
-    email: string,
-    password: string,
-  ): Promise<IJwtSignPayload | undefined> {
-    const user = await this.usersService.findByEmail(email, ['passwordHash']);
+  async validateUser(email: string, password: string): Promise<IJwtSignPayload | undefined> {
+    const user = await this.usersService.findByEmail(email, ['id', 'passwordHash']);
 
     if (user && bcrypt.compareSync(password, user.passwordHash)) {
       return {
@@ -51,9 +37,7 @@ export class AuthService {
     }
   }
 
-  async validateEmailConfirm(
-    dto: IConfirmEmailDto,
-  ): Promise<IApiResponse<IConfirmEmailResult>> {
+  async validateEmailConfirm(dto: IConfirmEmailDto): Promise<IApiResponse<IConfirmEmailResult>> {
     const user = await this.usersService.findByWhere(
       {
         emailConfirmationCode: dto.code,
@@ -79,25 +63,20 @@ export class AuthService {
         },
       };
     } else {
-      throw new NotFoundException(getValidatorMessage(EMessageType.WrongCode));
+      throw new ForbiddenException(getValidatorMessage(EMessageType.WrongCode));
     }
   }
 
-  async validateEmailRequest(
-    req: IApiRequest,
-  ): Promise<IApiResponse<IValidateEmailRequest>> {
+  /**
+   * Send confirmation email again
+   * **/
+  async validateEmailRequest(req: IApiRequest): Promise<IApiResponse<IValidateEmailRequest>> {
     if (!req.user) {
-      throw new ForbiddenException(
-        getValidatorMessage(EMessageType.InvalidToken),
-      );
+      throw new ForbiddenException(getValidatorMessage(EMessageType.InvalidToken));
     }
 
     const { userId } = req.user;
-    const emailConfirmationCode = bcrypt.hashSync(
-      `${userId}${Date.now()}`,
-      bcrypt.genSaltSync(10),
-    );
-
+    const emailConfirmationCode = bcrypt.hashSync(`${userId}${Date.now()}`, bcrypt.genSaltSync(10));
     const user = await this.usersService.update(userId, {
       emailConfirmationCode,
     });
@@ -116,15 +95,11 @@ export class AuthService {
         },
       };
     } else {
-      throw new BadRequestException(
-        getValidatorMessage(EMessageType.ServerError),
-      );
+      throw new BadRequestException(getValidatorMessage(EMessageType.ServerError));
     }
   }
 
-  async login(
-    dto: IRegisterRequestDto,
-  ): Promise<IApiResponse<IAuthSuccessResponse>> {
+  async login(dto: IRegisterRequestDto): Promise<IApiResponse<IAuthSuccessResponse>> {
     const validatedUser = await this.validateUser(dto.email, dto.password);
 
     if (validatedUser) {
@@ -134,25 +109,14 @@ export class AuthService {
         data,
       };
     } else {
-      throw new ForbiddenException(
-        getValidatorMessage(EMessageType.LoginIncorrect),
-      );
+      throw new ForbiddenException(getValidatorMessage(EMessageType.LoginIncorrect));
     }
   }
 
-  async register(
-    dto: IRegisterRequestDto,
-  ): Promise<IApiResponse<IAuthSuccessResponse>> {
+  async register(dto: IRegisterRequestDto): Promise<IApiResponse<IAuthSuccessResponse>> {
     const passwordHash = bcrypt.hashSync(dto.password, bcrypt.genSaltSync(10));
-    const emailConfirmationCode = bcrypt.hashSync(
-      `${dto.email}${Date.now()}`,
-      bcrypt.genSaltSync(10),
-    );
-    const user = await this.usersService.add(
-      dto.email,
-      passwordHash,
-      emailConfirmationCode,
-    );
+    const emailConfirmationCode = bcrypt.hashSync(`${dto.email}${Date.now()}`, bcrypt.genSaltSync(10));
+    const user = await this.usersService.add(dto.email, passwordHash, emailConfirmationCode);
 
     if (user) {
       await this.emailService.sendWelcome({
@@ -170,26 +134,17 @@ export class AuthService {
         data,
       };
     } else {
-      throw new BadRequestException(
-        getValidatorMessage(EMessageType.ServerError),
-      );
+      throw new BadRequestException(getValidatorMessage(EMessageType.ServerError));
     }
   }
 
   signUser(signPayload: IJwtSignPayload): IAuthSuccessResponse {
-    const { userId } = signPayload;
-    const payload: IJwtSignPayload = {
-      userId,
-    };
-
     return {
-      token: this.jwtService.sign(payload),
+      token: this.jwtService.sign(signPayload),
     };
   }
 
-  async passwordResetConfirm(
-    dto: IPasswordResetConfirmDto,
-  ): Promise<IApiResponse<IAuthSuccessResponse>> {
+  async passwordResetConfirm(dto: IPasswordResetConfirmDto): Promise<IApiResponse<IAuthSuccessResponse>> {
     const user = await this.usersService.findByWhere(
       {
         passwordResetCode: dto.code,
@@ -197,14 +152,8 @@ export class AuthService {
       ['id', 'passwordResetCodeExpires'],
     );
 
-    if (
-      user &&
-      differenceInMilliseconds(user.passwordResetCodeExpires, new Date()) > 0
-    ) {
-      const passwordHash = bcrypt.hashSync(
-        dto.password,
-        bcrypt.genSaltSync(10),
-      );
+    if (user && differenceInMilliseconds(user.passwordResetCodeExpires, new Date()) > 0) {
+      const passwordHash = bcrypt.hashSync(dto.password, bcrypt.genSaltSync(10));
 
       await this.usersService.update(user.id, {
         passwordHash,
@@ -220,44 +169,24 @@ export class AuthService {
         },
       };
     } else {
-      throw new BadRequestException(
-        getValidatorMessage(EMessageType.WrongCode),
-      );
+      throw new BadRequestException(getValidatorMessage(EMessageType.WrongCode));
     }
   }
 
-  async passwordResetRequest(
-    dto: IPasswordResetRequestDto,
-  ): Promise<IApiResponse<IRequestPasswordResetRequestResult>> {
-    const passwordResetCode = bcrypt.hashSync(
-      `${Date.now()}${dto.email}`,
-      bcrypt.genSaltSync(10),
-    );
+  async passwordResetRequest(dto: IPasswordResetRequestDto): Promise<IApiResponse<IRequestPasswordResetRequestResult>> {
+    const passwordResetCode = bcrypt.hashSync(`${Date.now()}${dto.email}`, bcrypt.genSaltSync(10));
 
-    const user = await this.usersService.findByEmail(dto.email, [
-      'id',
-      'email',
-      'passwordResetInterval',
-    ]);
+    const user = await this.usersService.findByEmail(dto.email, ['id', 'email', 'passwordResetInterval']);
 
     if (user) {
-      if (
-        differenceInMilliseconds(user.passwordResetInterval, new Date()) > 0
-      ) {
-        throw new MethodNotAllowedException(
-          undefined,
-          getValidatorMessage(EMessageType.PasswordResetInterval),
-        );
+      if (differenceInMilliseconds(user.passwordResetInterval, new Date()) > 0) {
+        throw new MethodNotAllowedException(undefined, getValidatorMessage(EMessageType.PasswordResetInterval));
       }
 
       await this.usersService.update(user.id, {
         passwordResetCode,
-        passwordResetInterval: new Date(
-          Date.now() + authConstants.passwordResetInterval,
-        ),
-        passwordResetCodeExpires: new Date(
-          Date.now() + authConstants.passwordResetExpires,
-        ),
+        passwordResetInterval: new Date(Date.now() + authConstants.passwordResetInterval),
+        passwordResetCodeExpires: new Date(Date.now() + authConstants.passwordResetExpires),
       });
 
       await this.emailService.sendPasswordReset({
@@ -273,17 +202,13 @@ export class AuthService {
         },
       };
     } else {
-      throw new NotFoundException(
-        getValidatorMessage(EMessageType.InvalidUser),
-      );
+      throw new ForbiddenException(getValidatorMessage(EMessageType.InvalidUser));
     }
   }
 
   async me(req: IApiRequest): Promise<IApiResponse<Partial<User>>> {
     if (!req.user) {
-      throw new ForbiddenException(
-        getValidatorMessage(EMessageType.InvalidToken),
-      );
+      throw new ForbiddenException(getValidatorMessage(EMessageType.InvalidToken));
     }
 
     const user = await this.usersService.findById(req.user.userId);
@@ -293,9 +218,7 @@ export class AuthService {
         data: user,
       };
     } else {
-      throw new NotFoundException(
-        getValidatorMessage(EMessageType.InvalidUser),
-      );
+      throw new ForbiddenException(getValidatorMessage(EMessageType.InvalidUser));
     }
   }
 }

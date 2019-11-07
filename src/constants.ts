@@ -6,11 +6,13 @@ import {
   POSTGRES_DATABASE,
   POSTGRES_SYNCHRONIZE,
   POSTGRES_SSL,
+  JWT_SECRET,
 } from './env';
+
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 
 export const jwtConstants = {
-  secret: process.env.JWT_SECRET,
+  secret: JWT_SECRET,
   expiresIn: '30d',
 };
 
@@ -24,12 +26,12 @@ export const authConstants = {
 
 export const typeOrmConstants: TypeOrmModuleOptions = {
   type: 'postgres',
-  host: POSTGRES_HOST || '',
-  port: parseInt(POSTGRES_PORT || '', 10),
-  username: POSTGRES_USERNAME || '',
-  password: POSTGRES_PASSWORD || '',
-  database: POSTGRES_DATABASE || '',
+  host: POSTGRES_HOST,
+  port: POSTGRES_PORT,
+  username: POSTGRES_USERNAME,
+  password: POSTGRES_PASSWORD,
+  database: POSTGRES_DATABASE,
   entities: [__dirname + '/**/*.entity{.ts,.js}'],
-  synchronize: POSTGRES_SYNCHRONIZE === '1' ? true : false,
-  ssl: POSTGRES_SSL === '1' ? true : false,
+  synchronize: POSTGRES_SYNCHRONIZE,
+  ssl: POSTGRES_SSL,
 };

@@ -1,10 +1,9 @@
 // @ts-ignore
-import * as sgTransport from 'nodemailer-sendgrid-transport';
+// import * as sgTransport from 'nodemailer-sendgrid-transport';
 import { Injectable } from '@nestjs/common';
 import { transactional } from './templates/transactional';
 import * as nodemailer from 'nodemailer';
 import * as Mustache from 'mustache';
-import { SENDGRID_API_KEY } from '../env';
 import {
   IEmailData,
   IEmailDataForNotification,
@@ -14,9 +13,10 @@ import {
 } from './email.interfaces';
 import { MailOptions } from 'nodemailer/lib/json-transport';
 import * as Mail from 'nodemailer/lib/mailer';
+import { SMTP_HOST, SMTP_PASS, SMTP_PORT, SMTP_USER } from '../env';
 
-const FROM_ADDRESS: string = 'mail@email.realthub.com';
-const FROM_NAME: string = 'Realthub';
+const FROM_ADDRESS: string = 'scarlett.beahan@ethereal.email';
+const FROM_NAME: string = 'Magnitude';
 
 const templates = {
   transactional,
@@ -32,43 +32,52 @@ export class EmailService {
 
   constructor() {
     this.transport = nodemailer.createTransport(
-      sgTransport({
+      // sgTransport({
+      //   auth: {
+      //     api_key: SENDGRID_API_KEY,
+      //   },
+      // }),
+
+      {
+        host: SMTP_HOST,
+        port: SMTP_PORT,
         auth: {
-          api_key: SENDGRID_API_KEY,
+          user: SMTP_USER,
+          pass: SMTP_PASS,
         },
-      }),
+      },
     );
   }
 
   private createMailOptions(data: IEmailData): MailOptions {
     const dataLocal = {
-      siteUrl: `https://realthub.com?from=email`,
-      linkUnderLogoUrl: `https://realthub.com?from=email`,
-      linkUnderLogoText: `realthub.com`,
+      siteUrl: `https://magnitude.com?from=email`,
+      linkUnderLogoUrl: `https://magnitude.com?from=email`,
+      linkUnderLogoText: `magnitude.com`,
       pre: data.pre,
       title: data.title,
       body: data.body,
       buttonText: data.buttonText,
       post: `If you received this email by mistake, simply delete it.`,
-      buttonUrl: `https://realthub.com`,
-      copyright: `Copyright © 2018–${new Date().getFullYear()} Realthub All rights reserved.`,
+      buttonUrl: `https://magnitude.com`,
+      copyright: `Copyright © 2018–${new Date().getFullYear()} Magnitude All rights reserved.`,
       nav: [
         {
           title: `Contacts`,
-          url: `https://realthub.com/about/contacts?from=email`,
+          url: `https://magnitude.com/about/contacts?from=email`,
         },
         {
           title: `Advertise`,
-          url: `https://realthub.com/about/advertise?from=email`,
+          url: `https://magnitude.com/about/advertise?from=email`,
         },
-        { title: `Terms`, url: `https://realthub.com/about/terms?from=email` },
+        { title: `Terms`, url: `https://magnitude.com/about/terms?from=email` },
         {
           title: `Privacy`,
-          url: `https://realthub.com/about/privacy?from=email`,
+          url: `https://magnitude.com/about/privacy?from=email`,
         },
       ],
       unsubscribeLinkText: `Unsubscribe`,
-      unsubscribeLinkUrl: `https://realthub.com/unsubscribe?from=email`,
+      unsubscribeLinkUrl: `https://magnitude.com/unsubscribe?from=email`,
       ...data,
     };
 
@@ -83,9 +92,7 @@ export class EmailService {
     };
   }
 
-  public async sendNotification(
-    data: IEmailDataForNotification,
-  ): Promise<boolean> {
+  public async sendNotification(data: IEmailDataForNotification): Promise<boolean> {
     const dataProcessed: IEmailData = {
       to: data.userEmail,
       subject: data.subject,
@@ -103,15 +110,13 @@ export class EmailService {
   public async sendWelcome(data: IEmailDataForAuth): Promise<boolean> {
     const dataProcessed: IEmailData = {
       to: data.userEmail,
-      subject: `Welcome to Realthub`,
+      subject: `Welcome to Magnitude`,
       userName: data.userName,
       pre: `Hi ${data.userName},`,
       title: `Registration almost complete...`,
       body: `Thank you for your registration! Please confirm your email to verify your account.`,
       buttonText: `Verify email`,
-      buttonUrl: `https://realthub.com/verification/email/${
-        data.emailConfirmationCode
-      }`,
+      buttonUrl: `https://magnitude.com/verification/email/${data.emailConfirmationCode}`,
     };
 
     return await this.send(this.createMailOptions(dataProcessed));
@@ -126,7 +131,7 @@ export class EmailService {
       title: `Your email address confirmed`,
       body: `Congratulations, you have successfully confirmed your email!`,
       buttonText: `Explore`,
-      buttonUrl: `https://realthub.com`,
+      buttonUrl: `https://magnitude.com`,
     };
 
     return await this.send(this.createMailOptions(dataProcessed));
@@ -141,15 +146,13 @@ export class EmailService {
       title: `Your password has changed`,
       body: `Congratulations, you have successfully changed your password!`,
       buttonText: `Welcome back`,
-      buttonUrl: `https://realthub.com`,
+      buttonUrl: `https://magnitude.com`,
     };
 
     return await this.send(this.createMailOptions(dataProcessed));
   }
 
-  public async sendPasswordReset(
-    data: IEmailDataForPasswordReset,
-  ): Promise<boolean> {
+  public async sendPasswordReset(data: IEmailDataForPasswordReset): Promise<boolean> {
     const dataProcessed: IEmailData = {
       to: data.userEmail,
       subject: `You just requested password reset`,
@@ -158,9 +161,7 @@ export class EmailService {
       title: `You just requested password reset`,
       body: `Follow the link below to set new password`,
       buttonText: `Set new password`,
-      buttonUrl: `https://realthub.com/auth/password-reset-confirm/?token=${
-        data.passwordResetCode
-      }`,
+      buttonUrl: `https://magnitude.com/auth/password-reset-confirm/?token=${data.passwordResetCode}`,
     };
 
     return await this.send(this.createMailOptions(dataProcessed));

@@ -1,8 +1,4 @@
-import {
-  Injectable,
-  InternalServerErrorException,
-  NotFoundException,
-} from '@nestjs/common';
+import { ForbiddenException, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '../entries/user.entity';
@@ -14,10 +10,7 @@ export class UserService {
     private readonly userRepository: Repository<User>,
   ) {}
 
-  async findByEmail(
-    email: string,
-    fields?: Array<keyof User>,
-  ): Promise<User | undefined> {
+  async findByEmail(email: string, fields?: Array<keyof User>): Promise<User | undefined> {
     const users = await this.userRepository.find({
       where: {
         email,
@@ -28,10 +21,7 @@ export class UserService {
     return users.length > 0 ? users[0] : undefined;
   }
 
-  async findById(
-    id: string,
-    fields?: Array<keyof User>,
-  ): Promise<User | undefined> {
+  async findById(id: string, fields?: Array<keyof User>): Promise<User | undefined> {
     const users = await this.userRepository.find({
       where: {
         id,
@@ -42,10 +32,7 @@ export class UserService {
     return users.length > 0 ? users[0] : undefined;
   }
 
-  async findByWhere(
-    where: Partial<User>,
-    fields?: Array<keyof User>,
-  ): Promise<User | undefined> {
+  async findByWhere(where: Partial<User>, fields?: Array<keyof User>): Promise<User | undefined> {
     const users = await this.userRepository.find({
       where,
       select: fields ? fields : undefined,
@@ -66,15 +53,11 @@ export class UserService {
       await this.userRepository.update(id, userData);
       return await this.userRepository.findOne(id);
     } else {
-      throw new NotFoundException();
+      throw new ForbiddenException();
     }
   }
 
-  async add(
-    email: string,
-    passwordHash: string,
-    emailConfirmationCode: string,
-  ): Promise<User | undefined> {
+  async add(email: string, passwordHash: string, emailConfirmationCode: string): Promise<User | undefined> {
     const foundUser = await this.findByEmail(email);
 
     if (foundUser) {
