@@ -18,24 +18,6 @@ export class User {
   passwordHash!: string;
 
   @Column({
-    type: 'timestamp',
-    select: false,
-  })
-  passwordChangedDate!: Date;
-
-  @Column({
-    type: 'timestamp',
-    select: false,
-  })
-  passwordResetCodeExpires!: Date;
-
-  @Column({
-    type: 'timestamp',
-    select: false,
-  })
-  passwordResetInterval!: Date;
-
-  @Column({
     type: 'text',
     select: false,
     nullable: true,
@@ -45,6 +27,28 @@ export class User {
   @Column({
     type: 'timestamp',
     select: false,
+    nullable: true,
+  })
+  passwordChangedDate!: Date;
+
+  @Column({
+    type: 'timestamp',
+    select: false,
+    nullable: true,
+  })
+  passwordResetCodeExpires!: Date;
+
+  @Column({
+    type: 'timestamp',
+    select: false,
+    nullable: true,
+  })
+  passwordResetInterval!: Date;
+
+  @Column({
+    type: 'timestamp',
+    select: false,
+    nullable: true,
   })
   emailConfirmationCodeDate!: Date;
 
