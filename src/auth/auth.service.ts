@@ -1,20 +1,20 @@
-import { Injectable, BadRequestException, MethodNotAllowedException, ForbiddenException } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, Injectable, MethodNotAllowedException } from '@nestjs/common';
 import { UserService } from '../user/user.service';
 import { JwtService } from '@nestjs/jwt';
 import { IJwtSignPayload } from './jwt.strategy';
-import { IRegisterRequestDto, IConfirmEmailDto, IPasswordResetRequestDto, IPasswordResetConfirmDto } from './auth.dto';
+import { IConfirmEmailDto, IPasswordResetConfirmDto, IPasswordResetRequestDto, IRegisterRequestDto } from './auth.dto';
 import * as bcrypt from 'bcrypt';
 import { authConstants } from '../constants';
 import { differenceInMilliseconds } from 'date-fns';
-import { getValidatorMessage, EMessageType } from '../messages';
+import { EMessageType, getValidatorMessage } from '../messages';
 import { EmailService } from '../email/email.service';
 import {
-  IConfirmEmailResult,
-  IValidateEmailRequest,
   IAuthSuccessResponse,
+  IConfirmEmailResult,
   IRequestPasswordResetRequestResult,
+  IValidateEmailRequest,
 } from './auth.interfaces';
-import { IApiResponse, IApiRequest } from 'src/interfaces/common';
+import { IApiRequest, IApiResponse } from 'src/interfaces/common';
 import { User } from 'src/entries/user.entity';
 
 @Injectable()
@@ -76,9 +76,20 @@ export class AuthService {
     }
 
     const { userId } = req.user;
+    const checkingUser = await this.usersService.findById(userId, ['emailConfirmationCodeDate']);
+
+    if (
+      checkingUser &&
+      differenceInMilliseconds(new Date(), checkingUser.emailConfirmationCodeDate) <
+        authConstants.emailConfirmationCodeInterval
+    ) {
+      throw new ForbiddenException(getValidatorMessage(EMessageType.EmailConfirmationCodeInterval));
+    }
+
     const emailConfirmationCode = bcrypt.hashSync(`${userId}${Date.now()}`, bcrypt.genSaltSync(10));
     const user = await this.usersService.update(userId, {
       emailConfirmationCode,
+      emailConfirmationCodeDate: new Date(),
     });
 
     if (user) {
@@ -175,7 +186,6 @@ export class AuthService {
 
   async passwordResetRequest(dto: IPasswordResetRequestDto): Promise<IApiResponse<IRequestPasswordResetRequestResult>> {
     const passwordResetCode = bcrypt.hashSync(`${Date.now()}${dto.email}`, bcrypt.genSaltSync(10));
-
     const user = await this.usersService.findByEmail(dto.email, ['id', 'email', 'passwordResetInterval']);
 
     if (user) {

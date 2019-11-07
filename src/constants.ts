@@ -22,6 +22,9 @@ export const authConstants = {
 
   // User can request reset code again after that time
   passwordResetInterval: 1000 * 60 * 2,
+
+  // User can request email confirmation again after that time
+  emailConfirmationCodeInterval: 1000 * 60 * 2,
 };
 
 export const typeOrmConstants: TypeOrmModuleOptions = {
@@ -34,4 +37,5 @@ export const typeOrmConstants: TypeOrmModuleOptions = {
   entities: [__dirname + '/**/*.entity{.ts,.js}'],
   synchronize: POSTGRES_SYNCHRONIZE,
   ssl: POSTGRES_SSL,
+  // dropSchema: true,
 };

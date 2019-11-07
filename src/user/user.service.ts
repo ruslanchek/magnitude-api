@@ -67,6 +67,10 @@ export class UserService {
         email,
         passwordHash,
         emailConfirmationCode,
+        passwordChangedDate: new Date(),
+        passwordResetCodeExpires: new Date(),
+        passwordResetInterval: new Date(),
+        emailConfirmationCodeDate: new Date(),
       });
 
       if (result.identifiers.length > 0) {
