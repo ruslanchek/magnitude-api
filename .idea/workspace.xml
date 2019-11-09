@@ -2,7 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="bc76ee50-a97c-461c-b9fa-ef2cd17ecbde" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/../magnitude/src/constants/urls.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../magnitude/src/constants/urls.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../magnitude/src/hooks/useAuthorized.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/auth/auth.controller.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/auth/auth.controller.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/auth/auth.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/auth/auth.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/auth/local.strategy.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/auth/local.strategy.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../magnitude/src/stores/authStore.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../magnitude/src/stores/authStore.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -10,7 +15,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../magnitude" />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="ProjectId" id="1THm8LNJn3ATn2TKP9H6xw54F7m" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
@@ -90,7 +95,7 @@
       <workItem from="1573125236033" duration="3000" />
       <workItem from="1573150929710" duration="653000" />
       <workItem from="1573153058870" duration="1075000" />
-      <workItem from="1573155793256" duration="9865000" />
+      <workItem from="1573155793256" duration="10685000" />
     </task>
     <task id="LOCAL-00001" summary="Update">
       <created>1573161076339</created>
@@ -134,7 +139,14 @@
       <option name="project" value="LOCAL" />
       <updated>1573287282929</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="Update">
+      <created>1573287370650</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1573287370650</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -163,11 +175,11 @@
       <screen x="0" y="0" width="1440" height="900" />
     </state>
     <state x="455" y="260" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1440.900@0.0.1440.900" timestamp="1573286275853" />
-    <state x="303" y="52" key="CommitChangelistDialog2" timestamp="1573287282798">
+    <state x="303" y="52" key="CommitChangelistDialog2" timestamp="1573287370406">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
     <state x="404" y="62" key="CommitChangelistDialog2/-1440.180.1440.900/0.0.1920.1080@0.0.1920.1080" timestamp="1573200875519" />
-    <state x="303" y="52" key="CommitChangelistDialog2/0.0.1440.900@0.0.1440.900" timestamp="1573287282798" />
+    <state x="303" y="52" key="CommitChangelistDialog2/0.0.1440.900@0.0.1440.900" timestamp="1573287370406" />
     <state x="747" y="302" key="FileChooserDialogImpl" timestamp="1573152924931">
       <screen x="0" y="0" width="1920" height="1080" />
     </state>

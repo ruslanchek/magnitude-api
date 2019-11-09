@@ -24,6 +24,12 @@ export class AuthController {
     return this.authService.login(dto);
   }
 
+  @Get('validate-user')
+  @UseGuards(AuthGuard('jwt'))
+  validateUser(@Request() req: IApiRequest) {
+    return this.authService.validateUser(req);
+  }
+
   @Get('me')
   @UseGuards(AuthGuard('jwt'))
   async me(@Request() req: IApiRequest) {

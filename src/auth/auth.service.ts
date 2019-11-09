@@ -25,7 +25,7 @@ export class AuthService {
     private readonly emailService: EmailService,
   ) {}
 
-  async validateUser(email: string, password: string): Promise<IJwtSignPayload | undefined> {
+  async validateUserCredentials(email: string, password: string): Promise<IJwtSignPayload | undefined> {
     const user = await this.usersService.findByEmail(email, ['id', 'passwordHash']);
 
     if (user && bcrypt.compareSync(password, user.passwordHash)) {
@@ -35,6 +35,14 @@ export class AuthService {
     } else {
       return undefined;
     }
+  }
+
+  validateUser(req: IApiRequest): IApiResponse<boolean> {
+    if (!req.user) {
+      throw new ForbiddenException(getValidatorMessage(EMessageType.InvalidToken));
+    }
+
+    return { data: true };
   }
 
   async validateEmailConfirm(dto: IConfirmEmailDto): Promise<IApiResponse<IConfirmEmailResult>> {
@@ -111,7 +119,7 @@ export class AuthService {
   }
 
   async login(dto: IRegisterRequestDto): Promise<IApiResponse<IAuthSuccessResponse>> {
-    const validatedUser = await this.validateUser(dto.email, dto.password);
+    const validatedUser = await this.validateUserCredentials(dto.email, dto.password);
 
     if (validatedUser) {
       const data = this.signUser(validatedUser);
