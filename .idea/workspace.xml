@@ -1,12 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="bc76ee50-a97c-461c-b9fa-ef2cd17ecbde" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/../magnitude/dev.env" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../magnitude/.env" beforeDir="false" afterPath="$PROJECT_DIR$/../magnitude/.env" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../magnitude/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/../magnitude/.gitignore" afterDir="false" />
-    </list>
+    <list default="true" id="bc76ee50-a97c-461c-b9fa-ef2cd17ecbde" name="Default Changelist" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -93,7 +88,7 @@
       <workItem from="1573125236033" duration="3000" />
       <workItem from="1573150929710" duration="653000" />
       <workItem from="1573153058870" duration="1075000" />
-      <workItem from="1573155793256" duration="9804000" />
+      <workItem from="1573155793256" duration="9829000" />
     </task>
     <task id="LOCAL-00001" summary="Update">
       <created>1573161076339</created>
@@ -123,7 +118,14 @@
       <option name="project" value="LOCAL" />
       <updated>1573287144284</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Update">
+      <created>1573287270856</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1573287270856</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -152,11 +154,11 @@
       <screen x="0" y="0" width="1440" height="900" />
     </state>
     <state x="455" y="260" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1440.900@0.0.1440.900" timestamp="1573286275853" />
-    <state x="303" y="52" key="CommitChangelistDialog2" timestamp="1573287267299">
+    <state x="303" y="52" key="CommitChangelistDialog2" timestamp="1573287270533">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
     <state x="404" y="62" key="CommitChangelistDialog2/-1440.180.1440.900/0.0.1920.1080@0.0.1920.1080" timestamp="1573200875519" />
-    <state x="303" y="52" key="CommitChangelistDialog2/0.0.1440.900@0.0.1440.900" timestamp="1573287267299" />
+    <state x="303" y="52" key="CommitChangelistDialog2/0.0.1440.900@0.0.1440.900" timestamp="1573287270533" />
     <state x="747" y="302" key="FileChooserDialogImpl" timestamp="1573152924931">
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
