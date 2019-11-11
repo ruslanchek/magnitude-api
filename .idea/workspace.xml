@@ -2,7 +2,18 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="bc76ee50-a97c-461c-b9fa-ef2cd17ecbde" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../magnitude/src/assets/images/logo-full.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../magnitude/src/assets/images/logo.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../magnitude/src/components/GlobalStyles.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../magnitude/src/components/Header.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../magnitude/src/constants/breakpoints.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../magnitude/src/constants/colors.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../magnitude/src/constants/ui-constants.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../magnitude/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/../magnitude/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../magnitude/src/RootRouter.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../magnitude/src/RootRouter.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../magnitude/yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/../magnitude/yarn.lock" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -13,14 +24,18 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../magnitude" />
   </component>
   <component name="ProjectId" id="1THm8LNJn3ATn2TKP9H6xw54F7m" />
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showExcludedFiles" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../magnitude" />
     <property name="node.js.detected.package.eslint" value="true" />
@@ -31,12 +46,16 @@
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
     <property name="nodejs_interpreter_path" value="$USER_HOME$/.nvm/versions/node/v12.13.0/bin/node" />
     <property name="nodejs_package_manager_path" value="yarn" />
-    <property name="prettierjs.PrettierConfiguration.Package" value="$PROJECT_DIR$/node_modules/prettier" />
+    <property name="prettierjs.PrettierConfiguration.NodeInterpreter" value="project" />
+    <property name="prettierjs.PrettierConfiguration.Package" value="$USER_HOME$/.nvm/versions/node/v12.13.0/lib/node_modules/prettier" />
     <property name="restartRequiresConfirmation" value="false" />
-    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
+    <property name="settings.editor.selected.configurable" value="editing.templates" />
     <property name="ts.external.directory.path" value="$PROJECT_DIR$/node_modules/typescript/lib" />
   </component>
   <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/../magnitude/src/assets/images" />
+    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/../magnitude" />
       <recent name="$PROJECT_DIR$/../magnitude/src/api" />
@@ -90,7 +109,7 @@
       <workItem from="1573125236033" duration="3000" />
       <workItem from="1573150929710" duration="653000" />
       <workItem from="1573153058870" duration="1075000" />
-      <workItem from="1573155793256" duration="16426000" />
+      <workItem from="1573155793256" duration="21219000" />
     </task>
     <task id="LOCAL-00001" summary="Update">
       <created>1573161076339</created>
@@ -162,7 +181,14 @@
       <option name="project" value="LOCAL" />
       <updated>1573334629633</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="Validate user added">
+      <created>1573335869219</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1573335869219</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -175,6 +201,7 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
     <MESSAGE value="Update" />
     <MESSAGE value="Validate user added" />
     <option name="LAST_COMMIT_MESSAGE" value="Validate user added" />
@@ -188,42 +215,43 @@
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
     <state x="424" y="202" key="#com.intellij.execution.impl.EditConfigurationsDialog/-1440.180.1440.900/0.0.1920.1080@0.0.1920.1080" timestamp="1573153141717" />
-    <state x="455" y="260" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1573286275853">
-      <screen x="0" y="0" width="1440" height="900" />
+    <state x="607" y="312" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1573459957319">
+      <screen x="0" y="0" width="1920" height="1080" />
     </state>
+    <state x="607" y="312" key="#com.intellij.fileTypes.FileTypeChooser/-1440.180.1440.900/0.0.1920.1080@0.0.1920.1080" timestamp="1573459957319" />
     <state x="455" y="260" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1440.900@0.0.1440.900" timestamp="1573286275853" />
-    <state x="303" y="52" key="CommitChangelistDialog2" timestamp="1573334629169">
+    <state x="303" y="52" key="CommitChangelistDialog2" timestamp="1573335869081">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
     <state x="404" y="62" key="CommitChangelistDialog2/-1440.180.1440.900/0.0.1920.1080@0.0.1920.1080" timestamp="1573200875519" />
-    <state x="303" y="52" key="CommitChangelistDialog2/0.0.1440.900@0.0.1440.900" timestamp="1573334629169" />
+    <state x="303" y="52" key="CommitChangelistDialog2/0.0.1440.900@0.0.1440.900" timestamp="1573335869081" />
     <state x="747" y="302" key="FileChooserDialogImpl" timestamp="1573152924931">
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
     <state x="747" y="302" key="FileChooserDialogImpl/-1440.180.1440.900/0.0.1920.1080@0.0.1920.1080" timestamp="1573152924931" />
-    <state width="1419" height="303" key="GridCell.Tab.0.bottom" timestamp="1573333942636">
+    <state width="1419" height="150" key="GridCell.Tab.0.bottom" timestamp="1573336386792">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
     <state width="1899" height="187" key="GridCell.Tab.0.bottom/-1440.180.1440.900/0.0.1920.1080@0.0.1920.1080" timestamp="1573200727992" />
-    <state width="1419" height="303" key="GridCell.Tab.0.bottom/0.0.1440.900@0.0.1440.900" timestamp="1573333942636" />
+    <state width="1419" height="150" key="GridCell.Tab.0.bottom/0.0.1440.900@0.0.1440.900" timestamp="1573336386792" />
     <state width="1419" height="304" key="GridCell.Tab.0.bottom/0.23.1440.829@0.23.1440.829" timestamp="1573155489784" />
-    <state width="1419" height="303" key="GridCell.Tab.0.center" timestamp="1573333942635">
+    <state width="1419" height="150" key="GridCell.Tab.0.center" timestamp="1573336386788">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
     <state width="1899" height="187" key="GridCell.Tab.0.center/-1440.180.1440.900/0.0.1920.1080@0.0.1920.1080" timestamp="1573200727991" />
-    <state width="1419" height="303" key="GridCell.Tab.0.center/0.0.1440.900@0.0.1440.900" timestamp="1573333942635" />
+    <state width="1419" height="150" key="GridCell.Tab.0.center/0.0.1440.900@0.0.1440.900" timestamp="1573336386788" />
     <state width="1419" height="304" key="GridCell.Tab.0.center/0.23.1440.829@0.23.1440.829" timestamp="1573155489783" />
-    <state width="1419" height="303" key="GridCell.Tab.0.left" timestamp="1573333942630">
+    <state width="1419" height="150" key="GridCell.Tab.0.left" timestamp="1573336386786">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
     <state width="1899" height="187" key="GridCell.Tab.0.left/-1440.180.1440.900/0.0.1920.1080@0.0.1920.1080" timestamp="1573200727990" />
-    <state width="1419" height="303" key="GridCell.Tab.0.left/0.0.1440.900@0.0.1440.900" timestamp="1573333942630" />
+    <state width="1419" height="150" key="GridCell.Tab.0.left/0.0.1440.900@0.0.1440.900" timestamp="1573336386786" />
     <state width="1419" height="304" key="GridCell.Tab.0.left/0.23.1440.829@0.23.1440.829" timestamp="1573155489782" />
-    <state width="1419" height="303" key="GridCell.Tab.0.right" timestamp="1573333942635">
+    <state width="1419" height="150" key="GridCell.Tab.0.right" timestamp="1573336386790">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
     <state width="1899" height="187" key="GridCell.Tab.0.right/-1440.180.1440.900/0.0.1920.1080@0.0.1920.1080" timestamp="1573200727992" />
-    <state width="1419" height="303" key="GridCell.Tab.0.right/0.0.1440.900@0.0.1440.900" timestamp="1573333942635" />
+    <state width="1419" height="150" key="GridCell.Tab.0.right/0.0.1440.900@0.0.1440.900" timestamp="1573336386790" />
     <state width="1419" height="304" key="GridCell.Tab.0.right/0.23.1440.829@0.23.1440.829" timestamp="1573155489783" />
     <state width="1419" height="303" key="GridCell.Tab.1.bottom" timestamp="1573333942640">
       <screen x="0" y="0" width="1440" height="900" />
@@ -273,16 +301,16 @@
       <screen x="0" y="0" width="1440" height="900" />
     </state>
     <state width="1419" height="303" key="GridCell.Tab.3.right/0.0.1440.900@0.0.1440.900" timestamp="1573333942647" />
-    <state x="346" y="149" key="SettingsEditor" timestamp="1573333843453">
-      <screen x="0" y="0" width="1440" height="900" />
+    <state x="461" y="179" key="SettingsEditor" timestamp="1573460101892">
+      <screen x="0" y="0" width="1920" height="1080" />
     </state>
-    <state x="461" y="179" key="SettingsEditor/-1440.180.1440.900/0.0.1920.1080@0.0.1920.1080" timestamp="1573153091746" />
-    <state x="346" y="149" key="SettingsEditor/0.0.1440.900@0.0.1440.900" timestamp="1573333843453" />
-    <state x="320" y="190" key="Vcs.Push.Dialog.v2" timestamp="1573334631375">
+    <state x="461" y="179" key="SettingsEditor/-1440.180.1440.900/0.0.1920.1080@0.0.1920.1080" timestamp="1573460101892" />
+    <state x="346" y="149" key="SettingsEditor/0.0.1440.900@0.0.1440.900" timestamp="1573335923041" />
+    <state x="320" y="190" key="Vcs.Push.Dialog.v2" timestamp="1573335870300">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
     <state x="427" y="228" key="Vcs.Push.Dialog.v2/-1440.180.1440.900/0.0.1920.1080@0.0.1920.1080" timestamp="1573200877038" />
-    <state x="320" y="190" key="Vcs.Push.Dialog.v2/0.0.1440.900@0.0.1440.900" timestamp="1573334631375" />
+    <state x="320" y="190" key="Vcs.Push.Dialog.v2/0.0.1440.900@0.0.1440.900" timestamp="1573335870300" />
     <state x="100" y="100" width="1240" height="700" key="com.intellij.history.integration.ui.views.FileHistoryDialog" timestamp="1573333920004">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
