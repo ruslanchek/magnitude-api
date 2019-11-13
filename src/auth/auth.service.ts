@@ -44,7 +44,7 @@ export class AuthService {
       throw new ForbiddenException(getValidatorMessage(EMessageType.InvalidToken));
     }
 
-    this.socketService.send('authorize', { x: 'hello!', userId: req.user.userId });
+    // this.socketService.send(req.user.userId, 'authorize', { x: 'hello!', userId: req.user.userId });
 
     return { data: true };
   }
