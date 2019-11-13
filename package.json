@@ -6,7 +6,8 @@
   "author": "Ruslan Shashkov <ruslanchek@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "dev": "tsnd --watch ./src"
+    "dev": "ts-node-dev --watch ./src",
+    "build": "tsc ./build"
   },
   "dependencies": {
     "dotenv": "^8.2.0",
@@ -14,6 +15,8 @@
   },
   "devDependencies": {
     "@types/mongoose": "^5.5.30",
-    "ts-node-dev": "^1.0.0-pre.44"
+    "ts-node": "^8.5.0",
+    "ts-node-dev": "^1.0.0-pre.44",
+    "typescript": "^3.7.2"
   }
 }
