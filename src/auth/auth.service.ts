@@ -16,6 +16,7 @@ import {
 } from './auth.interfaces';
 import { IApiRequest, IApiResponse } from 'src/interfaces/common';
 import { User } from 'src/entries/user.entity';
+import { SocketService } from '../socket/socket.service';
 
 @Injectable()
 export class AuthService {
@@ -23,6 +24,7 @@ export class AuthService {
     private readonly usersService: UserService,
     private readonly jwtService: JwtService,
     private readonly emailService: EmailService,
+    private readonly socketService: SocketService,
   ) {}
 
   async validateUserCredentials(email: string, password: string): Promise<IJwtSignPayload | undefined> {
@@ -41,6 +43,8 @@ export class AuthService {
     if (!req.user) {
       throw new ForbiddenException(getValidatorMessage(EMessageType.InvalidToken));
     }
+
+    this.socketService.send('authorize', { x: 'hello!', userId: req.user.userId });
 
     return { data: true };
   }
