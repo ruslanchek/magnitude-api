@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@ruslanchek/magnitude-shared@^0.0.4":
-  version "0.0.4"
-  resolved "https://npm.pkg.github.com/download/@ruslanchek/magnitude-shared/0.0.4/4e34044f345b6d57e78bebb1df13ff5637328ec23c03d6e3ea3463e09ee8607b#c2d08162aaeb392216820c9e2406a8868c3e4418"
-  integrity sha512-8ATfpcQd0/gHVrxhH696a/Vt7i+2+d+xRpVPOzMEw9oDzVRIjgw5Lpf/imnXlB8EHbzx/Kksfc9tL8aWsTNIgQ==
+"@ruslanchek/magnitude-shared@^0.0.7":
+  version "0.0.7"
+  resolved "https://npm.pkg.github.com/download/@ruslanchek/magnitude-shared/0.0.7/7cd5dc9a9f104ae14cf45dd84320d644c7e7b21e03656d628afb115f8ddbd57e#9a667a39cc96a5c9c03cb5fe41270a9ebf0d3c75"
+  integrity sha512-z47YhmSLLnD+iiHfbiqG/NsuBmA2JZ+aKPpcryIxh3QATnSkqwP20ek7KrawGC1sVN6fBoKdFy28rcLLm8RU/Q==
 
 "@types/body-parser@*":
   version "1.17.1"
