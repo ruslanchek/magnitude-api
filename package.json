@@ -1,5 +1,5 @@
 {
-  "name": "magnitude-api",
+  "name": "@ruslanchek/magnitude-api",
   "version": "1.0.0",
   "main": "index.js",
   "repository": "git@github.com:ruslanchek/magnitude-api.git",
@@ -10,7 +10,7 @@
     "build": "tsc --build"
   },
   "dependencies": {
-    "@ruslanchek/magnitude-shared": "^0.0.7",
+    "@ruslanchek/magnitude-shared": "^0.0.24",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",

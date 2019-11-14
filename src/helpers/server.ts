@@ -9,9 +9,13 @@ import { IOAuthService } from '../io-services/IOAuthService';
 function startExpressServices(app: Express.Application) {}
 
 function startIoServices(ioServer: Server) {
-  ioServer.on('connection', socket => {
-    logger.log('debug', `IO Client connected`);
+  ioServer.on('connect', socket => {
+    logger.log('debug', `IO client ${socket.id} connected`);
     new IOAuthService(socket);
+
+    socket.on('disconnect', () => {
+      logger.log('debug', `IO client ${socket.id} disconnected`);
+    });
   });
 }
 
