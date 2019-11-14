@@ -1,5 +1,5 @@
 import { connect, Mongoose } from 'mongoose';
-import { MONGO_URL } from './env';
+import { MONGO_URL } from '../env';
 import { logger } from './logger';
 
 let connection: Mongoose = null;

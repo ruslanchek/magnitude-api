@@ -1,14 +1,12 @@
 // import { User } from './models/User';
-import { getConnection as getDbConnection } from './db';
-import { createApp } from './app';
-import { logger } from './logger';
-import { createSocket } from './socket';
+import { getConnection as getDbConnection } from './helpers/db';
+import { createServer } from './helpers/server';
+import { logger } from './helpers/logger';
 
 async function bootstrap() {
   try {
     await getDbConnection();
-    const app = await createApp();
-    await createSocket(app);
+    await createServer();
 
     logger.log('info', 'APP bootsrapped');
   } catch (e) {

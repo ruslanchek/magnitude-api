@@ -20,12 +20,12 @@ const fileFormat = winston.format.combine(
 export const logger = winston.createLogger({
   level: 'info',
   format: winston.format.json(),
-  defaultMeta: { service: 'app' },
   transports: [
     new winston.transports.Console({
       format: winston.format.combine(winston.format.colorize(), consoleFormat),
+      level: 'debug',
     }),
     new winston.transports.File({ filename: './logs/error.log', level: 'error', format: fileFormat }),
-    new winston.transports.File({ filename: './logs/combined.log', format: fileFormat }),
+    new winston.transports.File({ filename: './logs/debug.log', level: 'debug', format: fileFormat }),
   ],
 });
