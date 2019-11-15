@@ -16,29 +16,57 @@ export interface IJwtPayload {
   userId: string;
 }
 
-export abstract class IOService {
+export abstract class SocketService {
   constructor(readonly socket: Socket) {
     this.bindListeners();
   }
 
   protected abstract bindListeners(): void;
 
-  protected formPacket<T>(
-    data: T | null,
+  protected listen<ClientDto>(
+    action: ESocketAction,
+    secure: boolean,
+    callback: (packet: ISocketClientPacket<ClientDto>, answerActionName: string) => Promise<void> | void,
+  ) {
+    this.socket.on(action, async (packet: ISocketClientPacket<ClientDto>) => {
+      const answerActionName = this.getActionName(action, packet);
+
+      if (packet && packet.data) {
+        try {
+          if (secure) {
+            const authorized = this.authorizePacket(packet);
+
+            if (authorized) {
+              await callback(packet, answerActionName);
+            }
+          } else {
+            await callback(packet, answerActionName);
+          }
+        } catch (e) {
+          logger.log('error', e.message);
+          this.socket.emit(answerActionName, this.formPacket(null, ESocketError.ServerError));
+        }
+      } else {
+        this.socket.emit(answerActionName, this.formPacket(null, ESocketError.EmptyPacket));
+      }
+    });
+  }
+
+  protected formPacket<ServerDto>(
+    data: ServerDto | null,
     errorCode: ESocketError | null,
     errorMessage?: string,
     errorFields?: ISocketServerErrorField[],
-  ): ISocketServerPacket<T> {
+  ): ISocketServerPacket<ServerDto> {
     return {
       data,
-      error:
-        errorCode >= 0
-          ? {
-              code: errorCode,
-              message: errorMessage,
-              fields: errorFields,
-            }
-          : null,
+      error: errorCode
+        ? {
+            code: errorCode,
+            message: errorMessage,
+            fields: errorFields,
+          }
+        : null,
     };
   }
 
@@ -74,7 +102,6 @@ export abstract class IOService {
         this.getActionName(ESocketAction.AuthAuthorize, packet),
         this.formPacket(null, ESocketError.InvalidToken),
       );
-
       this.socket.disconnect();
     }
 

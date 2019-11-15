@@ -4,14 +4,14 @@ import https from 'https';
 import io, { Server } from 'socket.io';
 import { PORT, PRODUCTION, HOST } from '../env';
 import { logger } from './logger';
-import { IOAuthService } from '../io-services/IOAuthService';
+import { SocketAuthService } from '../socket/SocketAuthService';
 
 function startExpressServices(app: Express.Application) {}
 
 function startIoServices(ioServer: Server) {
   ioServer.on('connect', socket => {
     logger.log('debug', `IO client ${socket.id} connected`);
-    new IOAuthService(socket);
+    new SocketAuthService(socket);
 
     socket.on('disconnect', () => {
       logger.log('debug', `IO client ${socket.id} disconnected`);

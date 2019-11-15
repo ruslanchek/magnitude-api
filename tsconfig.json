@@ -9,8 +9,6 @@
     "target": "es2017",
     "sourceMap": true,
     "outDir": "build",
-    "rootDir": "src",
-    "baseUrl": "./src",
     "incremental": true
   },
   "exclude": ["node_modules", "build"]

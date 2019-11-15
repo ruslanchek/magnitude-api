@@ -4,10 +4,15 @@ import { logger } from '../helpers/logger';
 
 type IModelUser = IEntityUser & Document;
 
-const UserSchema = new Schema({
-  email: { type: String, required: true, unique: true },
-  passwordHash: { type: String, required: true, select: false },
-});
+const UserSchema = new Schema(
+  {
+    email: { type: String, required: true, unique: true },
+    passwordHash: { type: String, required: true, select: false },
+  },
+  {
+    timestamps: { createdAt: 'createdAt', updatedAt: 'updatedAt' },
+  },
+);
 
 export const ModelUser = model<IModelUser>('User', UserSchema);
 
@@ -15,6 +20,16 @@ export async function getUserById(id: string): Promise<IModelUser | undefined> {
   try {
     return await ModelUser.findOne({
       _id: id,
+    });
+  } catch (e) {
+    logger.log('error', e.message);
+  }
+}
+
+export async function getUserByEmail(email: string): Promise<IModelUser | undefined> {
+  try {
+    return await ModelUser.findOne({
+      email,
     });
   } catch (e) {
     logger.log('error', e.message);
