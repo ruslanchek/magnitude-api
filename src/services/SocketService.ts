@@ -11,6 +11,7 @@ import { logger } from '../helpers/logger';
 import jsonwebtoken from 'jsonwebtoken';
 import { JWT_SECRET } from '../env';
 import { getUserById } from '../models/UserModel';
+import { validate } from 'class-validator';
 
 export interface IJwtPayload {
   userId: string;
@@ -25,28 +26,52 @@ export abstract class SocketService {
 
   protected listen<ClientDto>(
     action: ESocketAction,
+    dtoValidatorInstance: ClientDto,
     secure: boolean,
     callback: (packet: ISocketClientPacket<ClientDto>, answerActionName: string) => Promise<void> | void,
   ) {
+    // Binding a listener for action
     this.socket.on(action, async (packet: ISocketClientPacket<ClientDto>) => {
+      // Constructing an answer action name (because it depends on ns property from the packet)
       const answerActionName = this.getActionName(action, packet);
 
+      // Trying to determine if packet exists
       if (packet && packet.data) {
         try {
+          // If validator passed, trying to validate data
+          if (dtoValidatorInstance) {
+            for (const key in packet.data) {
+              if (packet.data.hasOwnProperty(key)) {
+                dtoValidatorInstance[key] = packet.data[key];
+              }
+            }
+
+            const result = await validate(dtoValidatorInstance);
+
+            if (result && result.length > 0) {
+              return this.socket.emit(answerActionName, this.formPacket(null, ESocketError.InvalidData));
+            }
+          }
+
+          // If action listener marked as secure, trying to authorize
           if (secure) {
             const authorized = this.authorizePacket(packet);
 
+            // If autorized successfuly, callback then
             if (authorized) {
               await callback(packet, answerActionName);
             }
+            // If action can be unautherized (e.g. login), just callback then
           } else {
             await callback(packet, answerActionName);
           }
         } catch (e) {
+          // If something wrong, answer with server error
           logger.log('error', e.message);
           this.socket.emit(answerActionName, this.formPacket(null, ESocketError.ServerError));
         }
       } else {
+        // If packet is impty, answer with empty packed error
         this.socket.emit(answerActionName, this.formPacket(null, ESocketError.EmptyPacket));
       }
     });
