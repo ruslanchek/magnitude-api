@@ -5,12 +5,11 @@ import {
   ISocketServerPacket,
   ISocketServerErrorField,
   ESocketError,
-  IEntityUser,
 } from '@ruslanchek/magnitude-shared';
 import { logger } from '../helpers/logger';
 import jsonwebtoken from 'jsonwebtoken';
 import { JWT_SECRET } from '../env';
-import { getUserById } from '../models/UserModel';
+import { getUserById, TUserModel } from '../models/UserModel';
 import { validate } from 'class-validator';
 
 export interface IJwtPayload {
@@ -103,7 +102,7 @@ export abstract class SocketService {
     return action;
   }
 
-  protected async authorizePacket(packet: ISocketClientPacket<any>): Promise<IEntityUser | null> {
+  protected async authorizePacket(packet: ISocketClientPacket<any>): Promise<TUserModel | null> {
     let result = null;
 
     if (packet && packet.token) {

@@ -4,7 +4,7 @@ import https from 'https';
 import io, { Server } from 'socket.io';
 import { PORT, PRODUCTION, HOST } from '../env';
 import { logger } from './logger';
-import { SocketAuthService } from '../socket/auth/auth.serice';
+import { SocketAuthService } from '../socket/auth/auth.service';
 
 function startExpressServices(app: Express.Application) {}
 
