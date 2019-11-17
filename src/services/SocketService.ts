@@ -27,7 +27,11 @@ export abstract class SocketService {
     action: ESocketAction,
     dtoValidatorInstance: ClientDto,
     secure: boolean,
-    callback: (packet: ISocketClientPacket<ClientDto>, answerActionName: string) => Promise<void> | void,
+    callback: (
+      packet: ISocketClientPacket<ClientDto>,
+      answerActionName: string,
+      user: TUserModel | null,
+    ) => Promise<void> | void,
   ) {
     // Binding a listener for action
     this.socket.on(action, async (packet: ISocketClientPacket<ClientDto>) => {
@@ -54,23 +58,27 @@ export abstract class SocketService {
 
           // If action listener marked as secure, trying to authorize
           if (secure) {
-            const authorized = this.authorizePacket(packet);
+            const user = await this.authorizePacket(packet);
 
             // If autorized successfuly, callback then
-            if (authorized) {
-              await callback(packet, answerActionName);
+            if (user) {
+              await callback(packet, answerActionName, user);
+            } else {
+              // If not autorized, emit invalid token error and disconnect
+              this.socket.emit(answerActionName, this.formPacket(null, ESocketError.InvalidToken));
+              this.socket.disconnect();
             }
-            // If action can be unautherized (e.g. login), just callback then
           } else {
-            await callback(packet, answerActionName);
+            // If action can be unautherized (e.g. login), just callback then
+            await callback(packet, answerActionName, null);
           }
         } catch (e) {
-          // If something wrong, answer with server error
+          // If something wrong, answer with a server error
           logger.log('error', e.message);
           this.socket.emit(answerActionName, this.formPacket(null, ESocketError.ServerError));
         }
       } else {
-        // If packet is impty, answer with empty packed error
+        // If packet is empty, answer with an empty packed error
         this.socket.emit(answerActionName, this.formPacket(null, ESocketError.EmptyPacket));
       }
     });
@@ -102,7 +110,7 @@ export abstract class SocketService {
     return action;
   }
 
-  protected async authorizePacket(packet: ISocketClientPacket<any>): Promise<TUserModel | null> {
+  private async authorizePacket(packet: ISocketClientPacket<any>): Promise<TUserModel | null> {
     let result = null;
 
     if (packet && packet.token) {
@@ -110,7 +118,7 @@ export abstract class SocketService {
         const jwtPayload = jsonwebtoken.verify(packet.token, JWT_SECRET) as IJwtPayload;
 
         if (jwtPayload && jwtPayload.userId) {
-          const user = getUserById(result.userId);
+          const user = getUserById(jwtPayload.userId);
 
           if (user) {
             return user;
@@ -119,14 +127,6 @@ export abstract class SocketService {
       } catch (e) {
         logger.log('error', e.message);
       }
-    }
-
-    if (result === null) {
-      this.socket.emit(
-        this.getActionName(ESocketAction.AuthAuthorize, packet),
-        this.formPacket(null, ESocketError.InvalidToken),
-      );
-      this.socket.disconnect();
     }
 
     return result;

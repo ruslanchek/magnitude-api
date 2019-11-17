@@ -9,8 +9,10 @@ import {
   IServerDtoAuthAuthorize,
   IClientDtoAuthLogin,
   IServerDtoAuthLogin,
+  IServerDtoAuthMe,
+  IClientDtoAuthMe,
 } from '@ruslanchek/magnitude-shared';
-import { ModelUser, getUserByEmail } from '../../models/UserModel';
+import { ModelUser, getUserByEmail, formSharedUserObject } from '../../models/UserModel';
 import jsonwebtoken from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import { JWT_SECRET } from '../../env';
@@ -93,5 +95,13 @@ export class SocketAuthService extends SocketService {
         }
       },
     );
+
+    this.listen<IClientDtoAuthMe>(ESocketAction.AuthMe, null, true, async (packet, action, user) => {
+      const dto = {
+        user: formSharedUserObject(user),
+      };
+
+      this.socket.emit(action, this.formPacket<IServerDtoAuthMe>(dto, null));
+    });
   }
 }
