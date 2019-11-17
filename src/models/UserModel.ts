@@ -59,6 +59,9 @@ export function formSharedUserObject(user: TUserModel): IEntityUserShared {
   filteredUser.id = filteredUser._id;
   delete filteredUser.passwordHash;
   delete filteredUser._id;
+  delete filteredUser.updatedAt;
+  delete filteredUser.createdAt;
+  delete filteredUser.__v;
 
   return filteredUser;
 }
