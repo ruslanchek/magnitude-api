@@ -23,6 +23,27 @@ export abstract class SocketService {
 
   protected abstract bindListeners(): void;
 
+  protected send<ServerDto>(
+    action: ESocketAction | string,
+    data: ServerDto | null,
+    errorCode: ESocketError | null,
+    errorMessage?: string,
+    errorFields?: ISocketServerErrorField[],
+  ) {
+    const packet: ISocketServerPacket<ServerDto> = {
+      data,
+      error: errorCode
+        ? {
+            code: errorCode,
+            message: errorMessage,
+            fields: errorFields,
+          }
+        : null,
+    };
+
+    this.socket.emit(action, packet);
+  }
+
   protected listen<ClientDto>(
     action: ESocketAction,
     dtoValidatorInstance: ClientDto,
@@ -52,7 +73,7 @@ export abstract class SocketService {
             const result = await validate(dtoValidatorInstance);
 
             if (result && result.length > 0) {
-              return this.socket.emit(answerActionName, this.formPacket(null, ESocketError.InvalidData));
+              return this.send(answerActionName, null, ESocketError.InvalidData);
             }
           }
 
@@ -65,7 +86,7 @@ export abstract class SocketService {
               await callback(packet, answerActionName, user);
             } else {
               // If not autorized, emit invalid token error and disconnect
-              this.socket.emit(answerActionName, this.formPacket(null, ESocketError.InvalidToken));
+              this.send(answerActionName, null, ESocketError.InvalidToken);
               this.socket.disconnect();
             }
           } else {
@@ -75,11 +96,11 @@ export abstract class SocketService {
         } catch (e) {
           // If something wrong, answer with a server error
           logger.log('error', e.message);
-          this.socket.emit(answerActionName, this.formPacket(null, ESocketError.ServerError));
+          this.send(answerActionName, null, ESocketError.ServerError);
         }
       } else {
         // If packet is empty, answer with an empty packed error
-        this.socket.emit(answerActionName, this.formPacket(null, ESocketError.EmptyPacket));
+        this.send(answerActionName, null, ESocketError.EmptyPacket);
       }
     });
   }

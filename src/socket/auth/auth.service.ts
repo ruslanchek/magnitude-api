@@ -38,7 +38,7 @@ export class SocketAuthService extends SocketService {
 
   protected bindListeners() {
     this.listen<IClientDtoAuthAuthorize>(ESocketAction.AuthAuthorize, null, false, async (packet, action) => {
-      this.socket.emit(action, this.formPacket<IServerDtoAuthAuthorize>({}, null));
+      this.send<IServerDtoAuthAuthorize>(action, {}, null);
     });
 
     this.listen<IClientDtoAuthLogin>(
@@ -55,11 +55,13 @@ export class SocketAuthService extends SocketService {
             }),
           };
 
-          this.socket.emit(action, this.formPacket<IServerDtoAuthLogin>(dto, null));
+          this.send<IServerDtoAuthLogin>(action, dto, null);
         } else {
-          this.socket.emit(
+          this.send<IServerDtoAuthLogin>(
             action,
-            this.formPacket(null, ESocketError.BadRequest, EAuthErrorMessages.UserCredentialsWrong),
+            null,
+            ESocketError.BadRequest,
+            EAuthErrorMessages.UserCredentialsWrong,
           );
         }
       },
@@ -73,9 +75,11 @@ export class SocketAuthService extends SocketService {
         const existingUser = await getUserByEmail(packet.data.email);
 
         if (existingUser) {
-          this.socket.emit(
+          this.send<IServerDtoAuthRegister>(
             action,
-            this.formPacket(null, ESocketError.BadRequest, EAuthErrorMessages.UserAlreadyExists),
+            null,
+            ESocketError.BadRequest,
+            EAuthErrorMessages.UserAlreadyExists,
           );
         } else {
           const newUser = new ModelUser({
@@ -91,7 +95,7 @@ export class SocketAuthService extends SocketService {
             }),
           };
 
-          this.socket.emit(action, this.formPacket<IServerDtoAuthRegister>(dto, null));
+          this.send<IServerDtoAuthRegister>(action, dto, null);
         }
       },
     );
@@ -101,7 +105,7 @@ export class SocketAuthService extends SocketService {
         user: formSharedUserObject(user),
       };
 
-      this.socket.emit(action, this.formPacket<IServerDtoAuthMe>(dto, null));
+      this.send<IServerDtoAuthMe>(action, dto, null);
     });
   }
 }
