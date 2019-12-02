@@ -11,7 +11,7 @@ export async function getConnection(): Promise<Mongoose> {
       autoReconnect: true,
       reconnectInterval: 3000,
       reconnectTries: Infinity,
-      useUnifiedTopology: true,
+      useUnifiedTopology: false,
       useCreateIndex: true,
       autoIndex: true,
     });

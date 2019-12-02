@@ -5,11 +5,12 @@ import {
   ISocketServerPacket,
   ISocketServerErrorField,
   ESocketError,
+  IEntityUserShared,
 } from '@ruslanchek/magnitude-shared';
 import { logger } from '../helpers/logger';
 import jsonwebtoken from 'jsonwebtoken';
 import { JWT_SECRET } from '../env';
-import { getUserById, TUserModel } from '../models/UserModel';
+import { formSharedUserObject, getUserById, TUserModel } from "../models/UserModel";
 import { validate } from 'class-validator';
 
 export interface IJwtPayload {
@@ -17,7 +18,7 @@ export interface IJwtPayload {
 }
 
 export abstract class SocketService {
-  constructor(readonly socket: Socket) {
+  protected constructor(readonly socket: Socket) {
     this.bindListeners();
   }
 
@@ -41,6 +42,8 @@ export abstract class SocketService {
         : null,
     };
 
+    logger.log('debug', `[${this.socket.id}] server emitted: ${action}, with data: ${JSON.stringify(packet)}`);
+
     this.socket.emit(action, packet);
   }
 
@@ -51,13 +54,15 @@ export abstract class SocketService {
     callback: (
       packet: ISocketClientPacket<ClientDto>,
       answerActionName: string,
-      user: TUserModel | null,
+      user: IEntityUserShared | null,
     ) => Promise<void> | void,
   ) {
     // Binding a listener for action
     this.socket.on(action, async (packet: ISocketClientPacket<ClientDto>) => {
       // Constructing an answer action name (because it depends on ns property from the packet)
       const answerActionName = this.getActionName(action, packet);
+
+      logger.log('debug', `[${this.socket.id}] client requested: ${answerActionName}, with data: ${JSON.stringify(packet)}`);
 
       // Trying to determine if packet exists
       if (packet && packet.data) {
@@ -81,16 +86,15 @@ export abstract class SocketService {
           if (secure) {
             const user = await this.authorizePacket(packet);
 
-            // If autorized successfuly, callback then
+            // If authorized successful, callback then
             if (user) {
-              await callback(packet, answerActionName, user);
+              await callback(packet, answerActionName, formSharedUserObject(user));
             } else {
-              // If not autorized, emit invalid token error and disconnect
+              // If not authorized, emit invalid token error and disconnect
               this.send(answerActionName, null, ESocketError.InvalidToken);
-              this.socket.disconnect();
             }
           } else {
-            // If action can be unautherized (e.g. login), just callback then
+            // If action can be unauthorized (e.g. login), just callback then
             await callback(packet, answerActionName, null);
           }
         } catch (e) {
@@ -103,24 +107,6 @@ export abstract class SocketService {
         this.send(answerActionName, null, ESocketError.EmptyPacket);
       }
     });
-  }
-
-  protected formPacket<ServerDto>(
-    data: ServerDto | null,
-    errorCode: ESocketError | null,
-    errorMessage?: string,
-    errorFields?: ISocketServerErrorField[],
-  ): ISocketServerPacket<ServerDto> {
-    return {
-      data,
-      error: errorCode
-        ? {
-            code: errorCode,
-            message: errorMessage,
-            fields: errorFields,
-          }
-        : null,
-    };
   }
 
   protected getActionName(action: ESocketAction | string, packet: ISocketClientPacket<any>): string {
@@ -139,7 +125,7 @@ export abstract class SocketService {
         const jwtPayload = jsonwebtoken.verify(packet.token, JWT_SECRET) as IJwtPayload;
 
         if (jwtPayload && jwtPayload.userId) {
-          const user = getUserById(jwtPayload.userId);
+          const user = await getUserById(jwtPayload.userId);
 
           if (user) {
             return user;

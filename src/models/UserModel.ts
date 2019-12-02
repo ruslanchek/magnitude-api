@@ -3,6 +3,7 @@ import { IEntityUserShared } from '@ruslanchek/magnitude-shared';
 import { logger } from '../helpers/logger';
 
 interface IEntityUserServer {
+  id: string;
   email: string;
   passwordHash: string;
 }

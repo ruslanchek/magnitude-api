@@ -12,7 +12,7 @@ import {
   IServerDtoAuthMe,
   IClientDtoAuthMe,
 } from '@ruslanchek/magnitude-shared';
-import { ModelUser, getUserByEmail, formSharedUserObject } from '../../models/UserModel';
+import { ModelUser, getUserByEmail, formSharedUserObject, getUserById } from '../../models/UserModel';
 import jsonwebtoken from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import { JWT_SECRET } from '../../env';
@@ -37,7 +37,7 @@ export class SocketAuthService extends SocketService {
   }
 
   protected bindListeners() {
-    this.listen<IClientDtoAuthAuthorize>(ESocketAction.AuthAuthorize, null, false, async (packet, action) => {
+    this.listen<IClientDtoAuthAuthorize>(ESocketAction.AuthAuthorize, null, true, async (packet, action) => {
       this.send<IServerDtoAuthAuthorize>(action, {}, null);
     });
 
@@ -102,7 +102,7 @@ export class SocketAuthService extends SocketService {
 
     this.listen<IClientDtoAuthMe>(ESocketAction.AuthMe, null, true, async (packet, action, user) => {
       const dto = {
-        user: formSharedUserObject(user),
+        user,
       };
 
       this.send<IServerDtoAuthMe>(action, dto, null);

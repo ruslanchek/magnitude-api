@@ -10,11 +10,11 @@ function startExpressServices(app: Express.Application) {}
 
 function startIoServices(ioServer: Server) {
   ioServer.on('connect', socket => {
-    logger.log('debug', `IO client ${socket.id} connected`);
+    logger.log('debug', `[${socket.id}] client connected`);
     new SocketAuthService(socket);
 
     socket.on('disconnect', () => {
-      logger.log('debug', `IO client ${socket.id} disconnected`);
+      logger.log('debug', `[${socket.id}] client disconnected`);
     });
   });
 }
