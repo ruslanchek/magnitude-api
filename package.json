@@ -9,6 +9,11 @@
     "dev": "ts-node-dev --cls --respawn ./src",
     "build": "tsc --build"
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "pretty-quick --staged"
+    }
+  },
   "dependencies": {
     "bcrypt": "^3.0.7",
     "class-validator": "^0.11.0",
@@ -25,7 +30,9 @@
     "@types/mongoose": "^5.5.32",
     "@types/node": "^12.12.14",
     "@types/socket.io": "^2.1.4",
+    "husky": "^3.1.0",
     "prettier": "^1.19.1",
+    "pretty-quick": "^2.0.1",
     "ts-node": "^8.5.4",
     "ts-node-dev": "^1.0.0-pre.44",
     "typescript": "^3.7.2"
