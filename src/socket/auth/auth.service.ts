@@ -37,20 +37,6 @@ export class SocketAuthService extends SocketService {
     return bcrypt.compareSync(rawPassword, encryptedPassword);
   }
 
-  private sendSubscriptionData = async (userId: string) => {
-    const ownProjects = await entities.project.getOwn(userId);
-
-    if (ownProjects) {
-      this.send<IServerDtoGetOwnProjects>(
-        ESocketAction.ProjectGetOwnProjects,
-        {
-          list: ownProjects.map(item => entities.project.makeSharedEntity(item)),
-        },
-        null,
-      );
-    }
-  };
-
   protected bindListeners() {
     this.listen<IClientDtoAuthAuthorize>(ESocketAction.AuthAuthorize, null, true, async (packet, action, user) => {
       this.send<IServerDtoAuthAuthorize>(action, {}, null);

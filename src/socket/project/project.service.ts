@@ -5,6 +5,7 @@ import {
   ESocketError,
   IClientDtoProjectCreate,
   IServerDtoAuthRegister,
+  IServerDtoGetOwnProjects,
   IServerDtoProjectCreate,
 } from '@ruslanchek/magnitude-shared';
 import { entities } from '../../helpers/db';
@@ -54,6 +55,8 @@ export class SocketProjectService extends SocketService {
           },
           null,
         );
+
+        await this.sendSubscriptionDataOwnProjects(user.id);
       },
     );
   }

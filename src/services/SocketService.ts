@@ -9,6 +9,7 @@ import {
   ESocketAction,
   ESocketError,
   IEntityUserShared,
+  IServerDtoGetOwnProjects,
   ISocketClientPacket,
   ISocketServerErrorField,
   ISocketServerPacket,
@@ -144,4 +145,22 @@ export abstract class SocketService {
 
     return null;
   }
+
+  protected sendSubscriptionDataOwnProjects = async (userId: string) => {
+    const ownProjects = await entities.project.getOwn(userId);
+
+    if (ownProjects) {
+      this.send<IServerDtoGetOwnProjects>(
+        ESocketAction.ProjectGetOwnProjects,
+        {
+          list: ownProjects.map(item => entities.project.makeSharedEntity(item)),
+        },
+        null,
+      );
+    }
+  };
+
+  protected sendSubscriptionData = async (userId: string) => {
+    await this.sendSubscriptionDataOwnProjects(userId);
+  };
 }
