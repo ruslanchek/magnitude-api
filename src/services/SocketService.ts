@@ -1,4 +1,4 @@
-import { Socket } from 'socket.io';
+import { Socket, Server } from 'socket.io';
 import { logger } from '../helpers/logger';
 import jsonwebtoken from 'jsonwebtoken';
 import { JWT_SECRET } from '../env';
@@ -15,12 +15,17 @@ import {
   ISocketServerPacket,
 } from '@ruslanchek/magnitude-shared';
 
+export enum ESubscriptionsRange {
+  Session,
+  User,
+}
+
 export interface IJwtPayload {
   userId: string;
 }
 
 export abstract class SocketService {
-  protected constructor(readonly socket: Socket) {
+  protected constructor(readonly socket: Socket, readonly io: Server) {
     this.bindListeners();
   }
 
@@ -29,6 +34,7 @@ export abstract class SocketService {
   protected send<ServerDto>(
     action: ESocketAction | string,
     data: ServerDto | null,
+    roomId: string | null,
     errorCode: ESocketError | null,
     errorMessage?: string,
     errorFields?: ISocketServerErrorField[],
@@ -44,13 +50,21 @@ export abstract class SocketService {
         : null,
     };
 
-    logger.log('debug', `[${this.socket.id}] server emitted: ${action}, with data: ${JSON.stringify(packet)}`);
+    logger.log('debug', `[${this.socket.id}]@[${roomId ?? 'session'}] server emitted: ${action}`);
 
-    this.socket.emit(action, packet);
+    if (roomId) {
+      this.io.in(roomId).emit(action, packet);
+    } else {
+      this.socket.emit(action, packet);
+    }
+  }
+
+  protected getUserRoomId(userId: string): string {
+    return `userRoom_${userId}`;
   }
 
   protected sendNoUserError(answerActionName: string) {
-    this.send(answerActionName, null, ESocketError.ServerError);
+    this.send(answerActionName, null, null, ESocketError.ServerError);
   }
 
   protected listen<ClientDto>(
@@ -68,10 +82,7 @@ export abstract class SocketService {
       // Constructing an answer action name (because it depends on ns property from the packet)
       const answerActionName = this.getActionName(action, packet);
 
-      logger.log(
-        'debug',
-        `[${this.socket.id}] client requested: ${answerActionName}, with data: ${JSON.stringify(packet)}`,
-      );
+      logger.log('debug', `[${this.socket.id}] client requested: ${answerActionName}`);
 
       // Trying to determine if packet exists
       if (packet && packet.data) {
@@ -87,7 +98,7 @@ export abstract class SocketService {
             const result = await validate(dtoValidatorInstance);
 
             if (result && result.length > 0) {
-              return this.send(answerActionName, null, ESocketError.InvalidData);
+              return this.send(answerActionName, null, null, ESocketError.InvalidData);
             }
           }
 
@@ -100,7 +111,7 @@ export abstract class SocketService {
               await callback(packet, answerActionName, entities.user.makeSharedEntity(user));
             } else {
               // If not authorized, emit invalid token error and disconnect
-              this.send(answerActionName, null, ESocketError.InvalidToken);
+              this.send(answerActionName, null, null, ESocketError.InvalidToken);
             }
           } else {
             // If action can be unauthorized (e.g. login), just callback then
@@ -109,11 +120,11 @@ export abstract class SocketService {
         } catch (e) {
           // If something wrong, answer with a server error
           logger.log('error', e.message);
-          this.send(answerActionName, null, ESocketError.ServerError);
+          this.send(answerActionName, null, null, ESocketError.ServerError);
         }
       } else {
         // If packet is empty, answer with an empty packed error
-        this.send(answerActionName, null, ESocketError.EmptyPacket);
+        this.send(answerActionName, null, null, ESocketError.EmptyPacket);
       }
     });
   }
@@ -146,7 +157,20 @@ export abstract class SocketService {
     return null;
   }
 
-  protected sendSubscriptionDataOwnProjects = async (userId: string) => {
+  protected getRoomId(userId: string, range: ESubscriptionsRange): string | null {
+    switch (range) {
+      case ESubscriptionsRange.User: {
+        return this.getUserRoomId(userId);
+      }
+
+      case ESubscriptionsRange.Session:
+      default: {
+        return null;
+      }
+    }
+  }
+
+  protected sendSubscriptionDataOwnProjects = async (userId: string, range: ESubscriptionsRange) => {
     const ownProjects = await entities.project.getOwn(userId);
 
     if (ownProjects) {
@@ -155,12 +179,13 @@ export abstract class SocketService {
         {
           list: ownProjects.map(item => entities.project.makeSharedEntity(item)),
         },
+        this.getRoomId(userId, range),
         null,
       );
     }
   };
 
-  protected sendSubscriptionData = async (userId: string) => {
-    await this.sendSubscriptionDataOwnProjects(userId);
+  protected sendSubscriptionData = async (userId: string, range: ESubscriptionsRange) => {
+    await this.sendSubscriptionDataOwnProjects(userId, range);
   };
 }

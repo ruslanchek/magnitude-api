@@ -1,11 +1,10 @@
-import { Socket } from 'socket.io';
-import { SocketService } from '../../services/SocketService';
+import { Socket, Server } from 'socket.io';
+import { ESubscriptionsRange, SocketService } from '../../services/SocketService';
 import {
   ESocketAction,
   ESocketError,
   IClientDtoProjectCreate,
   IServerDtoAuthRegister,
-  IServerDtoGetOwnProjects,
   IServerDtoProjectCreate,
 } from '@ruslanchek/magnitude-shared';
 import { entities } from '../../helpers/db';
@@ -13,8 +12,8 @@ import { EProjectErrorMessages } from './project.messages';
 import { CreateProjectDtoValidator } from './project.validators';
 
 export class SocketProjectService extends SocketService {
-  constructor(readonly socket: Socket) {
-    super(socket);
+  constructor(readonly socket: Socket, readonly io: Server) {
+    super(socket, io);
   }
 
   protected bindListeners() {
@@ -32,6 +31,7 @@ export class SocketProjectService extends SocketService {
         if (projectTitleExists === false) {
           return this.send<IServerDtoAuthRegister>(
             action,
+            null,
             null,
             ESocketError.BadRequest,
             EProjectErrorMessages.ProjectWithThisTitleAlreadyExists,
@@ -54,9 +54,10 @@ export class SocketProjectService extends SocketService {
             item: entities.project.makeSharedEntity(newProject),
           },
           null,
+          null,
         );
 
-        await this.sendSubscriptionDataOwnProjects(user.id);
+        await this.sendSubscriptionDataOwnProjects(user.id, ESubscriptionsRange.User);
       },
     );
   }

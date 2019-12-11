@@ -1,5 +1,5 @@
-import { Socket } from 'socket.io';
-import { IJwtPayload, SocketService } from '../../services/SocketService';
+import { Server, Socket } from 'socket.io';
+import { ESubscriptionsRange, IJwtPayload, SocketService } from '../../services/SocketService';
 import {
   ESocketAction,
   ESocketError,
@@ -11,7 +11,6 @@ import {
   IServerDtoAuthLogin,
   IServerDtoAuthMe,
   IServerDtoAuthRegister,
-  IServerDtoGetOwnProjects,
 } from '@ruslanchek/magnitude-shared';
 import jsonwebtoken from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
@@ -19,10 +18,11 @@ import { JWT_SECRET } from '../../env';
 import { EAuthErrorMessages } from './auth.messages';
 import { AuthLoginDtoValidator, AuthRegisterDtoValidator } from './auth.validators';
 import { entities } from '../../helpers/db';
+import { logger } from '../../helpers/logger';
 
 export class SocketAuthService extends SocketService {
-  constructor(readonly socket: Socket) {
-    super(socket);
+  constructor(readonly socket: Socket, readonly io: Server) {
+    super(socket, io);
   }
 
   private generateToken(jwtPayload: IJwtPayload): string {
@@ -39,10 +39,16 @@ export class SocketAuthService extends SocketService {
 
   protected bindListeners() {
     this.listen<IClientDtoAuthAuthorize>(ESocketAction.AuthAuthorize, null, true, async (packet, action, user) => {
-      this.send<IServerDtoAuthAuthorize>(action, {}, null);
+      this.send<IServerDtoAuthAuthorize>(action, {}, null, null);
 
       if (user) {
-        await this.sendSubscriptionData(user.id);
+        this.socket.join(this.getUserRoomId(user.id), async err => {
+          if (err) {
+            logger.log('error', err);
+          }
+
+          await this.sendSubscriptionData(user.id, ESubscriptionsRange.Session);
+        });
       }
     });
 
@@ -62,10 +68,12 @@ export class SocketAuthService extends SocketService {
               }),
             },
             null,
+            null,
           );
         } else {
           this.send<IServerDtoAuthLogin>(
             action,
+            null,
             null,
             ESocketError.BadRequest,
             EAuthErrorMessages.UserCredentialsWrong,
@@ -84,6 +92,7 @@ export class SocketAuthService extends SocketService {
         if (existingUser) {
           this.send<IServerDtoAuthRegister>(
             action,
+            null,
             null,
             ESocketError.BadRequest,
             EAuthErrorMessages.UserAlreadyExists,
@@ -104,7 +113,7 @@ export class SocketAuthService extends SocketService {
             }),
           };
 
-          this.send<IServerDtoAuthRegister>(action, dto, null);
+          this.send<IServerDtoAuthRegister>(action, dto, null, null);
         }
       },
     );
@@ -119,6 +128,7 @@ export class SocketAuthService extends SocketService {
         {
           user,
         },
+        null,
         null,
       );
     });

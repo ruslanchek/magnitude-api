@@ -12,8 +12,8 @@ function startExpressServices(app: Express.Application) {}
 function startIoServices(ioServer: Server) {
   ioServer.on('connect', socket => {
     logger.log('debug', `[${socket.id}] client connected`);
-    new SocketAuthService(socket);
-    new SocketProjectService(socket);
+    new SocketAuthService(socket, ioServer);
+    new SocketProjectService(socket, ioServer);
 
     socket.on('disconnect', () => {
       logger.log('debug', `[${socket.id}] client disconnected`);
