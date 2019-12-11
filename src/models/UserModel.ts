@@ -14,6 +14,8 @@ const UserSchema = new Schema(
   {
     email: { type: String, required: true, unique: true },
     passwordHash: { type: String, required: true, select: false },
+    projectsOwnedOf: [{ type: Schema.Types.ObjectId, ref: 'Project' }],
+    projectsInvitedTo: [{ type: Schema.Types.ObjectId, ref: 'Project' }],
   },
   {
     timestamps: { createdAt: 'createdAt', updatedAt: 'updatedAt' },
