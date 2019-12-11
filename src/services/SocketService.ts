@@ -4,7 +4,7 @@ import jsonwebtoken from 'jsonwebtoken';
 import { JWT_SECRET } from '../env';
 import { validate } from 'class-validator';
 import { entities } from '../helpers/db';
-import { TEntityUserDocument } from '../models/UserEntity';
+import { TEntityUserDocument } from '../entities/UserEntity';
 import {
   ESocketAction,
   ESocketError,
@@ -131,7 +131,7 @@ export abstract class SocketService {
         const jwtPayload = jsonwebtoken.verify(packet.token, JWT_SECRET) as IJwtPayload;
 
         if (jwtPayload && jwtPayload.userId) {
-          const user = await entities.user.getUserById(jwtPayload.userId);
+          const user = await entities.user.getById(jwtPayload.userId);
 
           if (user) {
             return user;

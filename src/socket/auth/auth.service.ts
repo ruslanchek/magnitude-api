@@ -46,7 +46,7 @@ export class SocketAuthService extends SocketService {
       new AuthLoginDtoValidator(),
       false,
       async (packet, action) => {
-        const existingUser = await entities.user.getUserByEmail(packet.data.email, ['passwordHash']);
+        const existingUser = await entities.user.getByEmail(packet.data.email, ['passwordHash']);
 
         if (existingUser && this.verifyPassword(packet.data.password, existingUser.passwordHash)) {
           const dto = {
@@ -72,7 +72,7 @@ export class SocketAuthService extends SocketService {
       new AuthRegisterDtoValidator(),
       false,
       async (packet, action) => {
-        const existingUser = await entities.user.getUserByEmail(packet.data.email);
+        const existingUser = await entities.user.getByEmail(packet.data.email);
 
         if (existingUser) {
           this.send<IServerDtoAuthRegister>(
@@ -87,33 +87,33 @@ export class SocketAuthService extends SocketService {
             passwordHash: this.cryptPassword(packet.data.password),
           });
 
-          if (newUser) {
-            const dto = {
-              token: this.generateToken({
-                userId: newUser.id,
-              }),
-            };
-
-            this.send<IServerDtoAuthRegister>(action, dto, null);
-          } else {
+          if (!newUser) {
             throw new Error();
           }
+
+          const dto = {
+            token: this.generateToken({
+              userId: newUser.id,
+            }),
+          };
+
+          this.send<IServerDtoAuthRegister>(action, dto, null);
         }
       },
     );
 
     this.listen<IClientDtoAuthMe>(ESocketAction.AuthMe, null, true, async (packet, action, user) => {
-      if (user) {
-        this.send<IServerDtoAuthMe>(
-          action,
-          {
-            user,
-          },
-          null,
-        );
-      } else {
-        this.sendNoUserError(action);
+      if (!user) {
+        return this.sendNoUserError(action);
       }
+
+      this.send<IServerDtoAuthMe>(
+        action,
+        {
+          user,
+        },
+        null,
+      );
     });
   }
 }

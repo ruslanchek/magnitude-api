@@ -1,5 +1,5 @@
 export enum EProjectErrorMessages {
-  TestError = 'TestError',
+  ProjectWithThisTitleAlreadyExists = 'ProjectWithThisTitleAlreadyExists',
 }
 
 export enum EProjectDataErrorMessages {}

@@ -21,28 +21,39 @@ export class SocketProjectService extends SocketService {
       ESocketAction.ProjectCreate,
       new CreateProjectDtoValidator(),
       true,
-      async (packet, action) => {
-        const newProject = await entities.project.create({
-          ...packet.data,
-          slug: packet.data,
-        });
+      async (packet, action, user) => {
+        if (!user) {
+          return this.sendNoUserError(action);
+        }
 
-        if (newProject) {
-          this.send<IServerDtoProjectCreate>(
-            action,
-            {
-              item: entities.project.makeSharedEntity(newProject),
-            },
-            null,
-          );
-        } else {
-          this.send<IServerDtoAuthRegister>(
+        const projectTitleExists = await entities.project.checkTitleExists(user.id, packet.data.title);
+
+        if (projectTitleExists === false) {
+          return this.send<IServerDtoAuthRegister>(
             action,
             null,
             ESocketError.BadRequest,
-            EProjectErrorMessages.TestError, //todo: Fake error only for tests!!!
+            EProjectErrorMessages.ProjectWithThisTitleAlreadyExists,
           );
         }
+
+        const newProject = await entities.project.create({
+          ...packet.data,
+          owner: user.id,
+          invitees: [],
+        });
+
+        if (!newProject) {
+          throw new Error();
+        }
+
+        this.send<IServerDtoProjectCreate>(
+          action,
+          {
+            item: entities.project.makeSharedEntity(newProject),
+          },
+          null,
+        );
       },
     );
   }

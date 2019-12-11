@@ -1,8 +1,8 @@
 import { connect, Mongoose } from 'mongoose';
-import { UserEntity } from '../models/UserEntity';
+import { UserEntity } from '../entities/UserEntity';
 import { MONGO_URL } from '../env';
 import { logger } from './logger';
-import { ProjectEntity } from '../models/ProjectEntity';
+import { ProjectEntity } from '../entities/ProjectEntity';
 
 interface IEntities {
   user: UserEntity;

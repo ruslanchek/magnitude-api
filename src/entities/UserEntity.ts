@@ -40,7 +40,7 @@ export class UserEntity extends Entity<IEntityUserServer, TEntityUserDocument, I
     return shared;
   }
 
-  public async getUserById(id: string, select?: Array<keyof IEntityUserServer>): Promise<TEntityUserDocument | null> {
+  public async getById(id: string, select?: Array<keyof IEntityUserServer>): Promise<TEntityUserDocument | null> {
     try {
       return await this.model.findOne(
         {
@@ -55,10 +55,7 @@ export class UserEntity extends Entity<IEntityUserServer, TEntityUserDocument, I
     return null;
   }
 
-  public async getUserByEmail(
-    email: string,
-    select?: Array<keyof IEntityUserServer>,
-  ): Promise<TEntityUserDocument | null> {
+  public async getByEmail(email: string, select?: Array<keyof IEntityUserServer>): Promise<TEntityUserDocument | null> {
     try {
       return await this.model.findOne(
         {
