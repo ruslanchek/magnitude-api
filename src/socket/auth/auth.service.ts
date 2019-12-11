@@ -12,12 +12,12 @@ import {
   IServerDtoAuthMe,
   IClientDtoAuthMe,
 } from '@ruslanchek/magnitude-shared';
-import { ModelUser, getUserByEmail, formSharedUserObject, getUserById } from '../../models/UserModel';
 import jsonwebtoken from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import { JWT_SECRET } from '../../env';
 import { EAuthErrorMessages } from './auth.messages';
 import { AuthRegisterDtoValidator, AuthLoginDtoValidator } from './auth.validators';
+import { entities } from '../../helpers/db';
 
 export class SocketAuthService extends SocketService {
   constructor(readonly socket: Socket) {
@@ -46,7 +46,7 @@ export class SocketAuthService extends SocketService {
       new AuthLoginDtoValidator(),
       false,
       async (packet, action) => {
-        const existingUser = await getUserByEmail(packet.data.email, ['passwordHash']);
+        const existingUser = await entities.user.getUserByEmail(packet.data.email, ['passwordHash']);
 
         if (existingUser && this.verifyPassword(packet.data.password, existingUser.passwordHash)) {
           const dto = {
@@ -72,7 +72,7 @@ export class SocketAuthService extends SocketService {
       new AuthRegisterDtoValidator(),
       false,
       async (packet, action) => {
-        const existingUser = await getUserByEmail(packet.data.email);
+        const existingUser = await entities.user.getUserByEmail(packet.data.email);
 
         if (existingUser) {
           this.send<IServerDtoAuthRegister>(
@@ -82,30 +82,38 @@ export class SocketAuthService extends SocketService {
             EAuthErrorMessages.UserAlreadyExists,
           );
         } else {
-          const newUser = new ModelUser({
+          const newUser = await entities.user.create({
             email: packet.data.email,
             passwordHash: this.cryptPassword(packet.data.password),
           });
 
-          await newUser.save();
+          if (newUser) {
+            const dto = {
+              token: this.generateToken({
+                userId: newUser.id,
+              }),
+            };
 
-          const dto = {
-            token: this.generateToken({
-              userId: newUser.id,
-            }),
-          };
-
-          this.send<IServerDtoAuthRegister>(action, dto, null);
+            this.send<IServerDtoAuthRegister>(action, dto, null);
+          } else {
+            throw new Error();
+          }
         }
       },
     );
 
     this.listen<IClientDtoAuthMe>(ESocketAction.AuthMe, null, true, async (packet, action, user) => {
-      const dto = {
-        user,
-      };
-
-      this.send<IServerDtoAuthMe>(action, dto, null);
+      if (user) {
+        this.send<IServerDtoAuthMe>(
+          action,
+          {
+            user,
+          },
+          null,
+        );
+      } else {
+        this.sendNoUserError(action);
+      }
     });
   }
 }

@@ -5,6 +5,7 @@ import io, { Server } from 'socket.io';
 import { PORT, PRODUCTION, HOST } from '../env';
 import { logger } from './logger';
 import { SocketAuthService } from '../socket/auth/auth.service';
+import { SocketProjectService } from '../socket/project/project.service';
 
 function startExpressServices(app: Express.Application) {}
 
@@ -12,6 +13,7 @@ function startIoServices(ioServer: Server) {
   ioServer.on('connect', socket => {
     logger.log('debug', `[${socket.id}] client connected`);
     new SocketAuthService(socket);
+    new SocketProjectService(socket);
 
     socket.on('disconnect', () => {
       logger.log('debug', `[${socket.id}] client disconnected`);

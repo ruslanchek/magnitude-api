@@ -1,17 +1,18 @@
 import { Socket } from 'socket.io';
-import {
-  ISocketClientPacket,
-  ESocketAction,
-  ISocketServerPacket,
-  ISocketServerErrorField,
-  ESocketError,
-  IEntityUserShared,
-} from '@ruslanchek/magnitude-shared';
 import { logger } from '../helpers/logger';
 import jsonwebtoken from 'jsonwebtoken';
 import { JWT_SECRET } from '../env';
-import { formSharedUserObject, getUserById, TUserModel } from "../models/UserModel";
 import { validate } from 'class-validator';
+import { entities } from '../helpers/db';
+import { TEntityUserDocument } from '../models/UserEntity';
+import {
+  ESocketAction,
+  ESocketError,
+  IEntityUserShared,
+  ISocketClientPacket,
+  ISocketServerErrorField,
+  ISocketServerPacket,
+} from '@ruslanchek/magnitude-shared';
 
 export interface IJwtPayload {
   userId: string;
@@ -47,9 +48,13 @@ export abstract class SocketService {
     this.socket.emit(action, packet);
   }
 
+  protected sendNoUserError(answerActionName: string) {
+    this.send(answerActionName, null, ESocketError.ServerError);
+  }
+
   protected listen<ClientDto>(
     action: ESocketAction,
-    dtoValidatorInstance: ClientDto,
+    dtoValidatorInstance: ClientDto | null,
     secure: boolean,
     callback: (
       packet: ISocketClientPacket<ClientDto>,
@@ -62,7 +67,10 @@ export abstract class SocketService {
       // Constructing an answer action name (because it depends on ns property from the packet)
       const answerActionName = this.getActionName(action, packet);
 
-      logger.log('debug', `[${this.socket.id}] client requested: ${answerActionName}, with data: ${JSON.stringify(packet)}`);
+      logger.log(
+        'debug',
+        `[${this.socket.id}] client requested: ${answerActionName}, with data: ${JSON.stringify(packet)}`,
+      );
 
       // Trying to determine if packet exists
       if (packet && packet.data) {
@@ -70,7 +78,7 @@ export abstract class SocketService {
           // If validator passed, trying to validate data
           if (dtoValidatorInstance) {
             for (const key in packet.data) {
-              if (packet.data.hasOwnProperty(key)) {
+              if (Object.hasOwnProperty.call(packet.data, key)) {
                 dtoValidatorInstance[key] = packet.data[key];
               }
             }
@@ -88,7 +96,7 @@ export abstract class SocketService {
 
             // If authorized successful, callback then
             if (user) {
-              await callback(packet, answerActionName, formSharedUserObject(user));
+              await callback(packet, answerActionName, entities.user.makeSharedEntity(user));
             } else {
               // If not authorized, emit invalid token error and disconnect
               this.send(answerActionName, null, ESocketError.InvalidToken);
@@ -117,15 +125,13 @@ export abstract class SocketService {
     return action;
   }
 
-  private async authorizePacket(packet: ISocketClientPacket<any>): Promise<TUserModel | null> {
-    let result = null;
-
+  protected async authorizePacket(packet: ISocketClientPacket<any>): Promise<TEntityUserDocument | null> {
     if (packet && packet.token) {
       try {
         const jwtPayload = jsonwebtoken.verify(packet.token, JWT_SECRET) as IJwtPayload;
 
         if (jwtPayload && jwtPayload.userId) {
-          const user = await getUserById(jwtPayload.userId);
+          const user = await entities.user.getUserById(jwtPayload.userId);
 
           if (user) {
             return user;
@@ -136,6 +142,6 @@ export abstract class SocketService {
       }
     }
 
-    return result;
+    return null;
   }
 }

@@ -1,16 +1,18 @@
-import { getConnection as getDbConnection } from './helpers/db';
+import { getConnection } from './helpers/db';
 import { createServer } from './helpers/server';
 import { logger } from './helpers/logger';
 
 async function bootstrap() {
   try {
-    await getDbConnection();
+    await getConnection();
     await createServer();
 
-    logger.log('info', 'APP bootsrapped');
+    logger.log('info', 'App bootstrapped');
   } catch (e) {
     logger.log('error', e.message);
   }
 }
 
-bootstrap();
+(async () => {
+  await bootstrap();
+})();
