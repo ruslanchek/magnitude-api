@@ -1,22 +1,23 @@
 import { Socket } from 'socket.io';
-import { SocketService, IJwtPayload } from '../../services/SocketService';
+import { IJwtPayload, SocketService } from '../../services/SocketService';
 import {
   ESocketAction,
-  IClientDtoAuthAuthorize,
-  IClientDtoAuthRegister,
-  IServerDtoAuthRegister,
   ESocketError,
-  IServerDtoAuthAuthorize,
+  IClientDtoAuthAuthorize,
   IClientDtoAuthLogin,
+  IClientDtoAuthMe,
+  IClientDtoAuthRegister,
+  IServerDtoAuthAuthorize,
   IServerDtoAuthLogin,
   IServerDtoAuthMe,
-  IClientDtoAuthMe,
+  IServerDtoAuthRegister,
+  IServerDtoGetOwnProjects,
 } from '@ruslanchek/magnitude-shared';
 import jsonwebtoken from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import { JWT_SECRET } from '../../env';
 import { EAuthErrorMessages } from './auth.messages';
-import { AuthRegisterDtoValidator, AuthLoginDtoValidator } from './auth.validators';
+import { AuthLoginDtoValidator, AuthRegisterDtoValidator } from './auth.validators';
 import { entities } from '../../helpers/db';
 
 export class SocketAuthService extends SocketService {
@@ -36,9 +37,27 @@ export class SocketAuthService extends SocketService {
     return bcrypt.compareSync(rawPassword, encryptedPassword);
   }
 
+  private sendSubscriptionData = async (userId: string) => {
+    const ownProjects = await entities.project.getOwn(userId);
+
+    if (ownProjects) {
+      this.send<IServerDtoGetOwnProjects>(
+        ESocketAction.ProjectGetOwnProjects,
+        {
+          list: ownProjects.map(item => entities.project.makeSharedEntity(item)),
+        },
+        null,
+      );
+    }
+  };
+
   protected bindListeners() {
-    this.listen<IClientDtoAuthAuthorize>(ESocketAction.AuthAuthorize, null, true, async (packet, action) => {
+    this.listen<IClientDtoAuthAuthorize>(ESocketAction.AuthAuthorize, null, true, async (packet, action, user) => {
       this.send<IServerDtoAuthAuthorize>(action, {}, null);
+
+      if (user) {
+        await this.sendSubscriptionData(user.id);
+      }
     });
 
     this.listen<IClientDtoAuthLogin>(
@@ -49,13 +68,15 @@ export class SocketAuthService extends SocketService {
         const existingUser = await entities.user.getByEmail(packet.data.email, ['passwordHash']);
 
         if (existingUser && this.verifyPassword(packet.data.password, existingUser.passwordHash)) {
-          const dto = {
-            token: this.generateToken({
-              userId: existingUser.id,
-            }),
-          };
-
-          this.send<IServerDtoAuthLogin>(action, dto, null);
+          this.send<IServerDtoAuthLogin>(
+            action,
+            {
+              token: this.generateToken({
+                userId: existingUser.id,
+              }),
+            },
+            null,
+          );
         } else {
           this.send<IServerDtoAuthLogin>(
             action,
