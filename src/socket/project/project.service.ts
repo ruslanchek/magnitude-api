@@ -1,10 +1,11 @@
-import { Socket, Server } from 'socket.io';
+import { Server, Socket } from 'socket.io';
 import { ESubscriptionsRange, SocketService } from '../../services/SocketService';
 import {
   ESocketAction,
   ESocketError,
   IClientDtoProjectCreate,
   IServerDtoAuthRegister,
+  IServerDtoGetOwnProjects,
   IServerDtoProjectCreate,
 } from '@ruslanchek/magnitude-shared';
 import { entities } from '../../helpers/db';
@@ -48,16 +49,26 @@ export class SocketProjectService extends SocketService {
           throw new Error();
         }
 
+        const item = entities.project.makeSharedEntity(newProject);
+
         this.send<IServerDtoProjectCreate>(
           action,
           {
-            item: entities.project.makeSharedEntity(newProject),
+            item,
           },
           null,
           null,
         );
 
-        await this.sendSubscriptionDataOwnProjects(user.id, ESubscriptionsRange.User);
+        this.send<IServerDtoGetOwnProjects>(
+          ESocketAction.ProjectGetOwnProjects,
+          {
+            list: [item],
+            incremental: true,
+          },
+          this.getRoomId(user.id, ESubscriptionsRange.User),
+          null,
+        );
       },
     );
   }

@@ -8,6 +8,8 @@ interface IEntityProjectServer {
   title: string;
   owner: string;
   invitees: string[];
+  updatedAt: Date;
+  createdAt: Date;
 }
 
 export type TEntityProjectDocument = IEntityProjectServer & Document;
@@ -32,8 +34,6 @@ export class ProjectEntity extends Entity<IEntityProjectServer, TEntityProjectDo
     shared.id = shared._id;
 
     delete shared._id;
-    delete shared.updatedAt;
-    delete shared.createdAt;
     delete shared.__v;
 
     return shared;

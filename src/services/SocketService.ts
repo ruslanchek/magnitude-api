@@ -178,6 +178,7 @@ export abstract class SocketService {
         ESocketAction.ProjectGetOwnProjects,
         {
           list: ownProjects.map(item => entities.project.makeSharedEntity(item)),
+          incremental: false,
         },
         this.getRoomId(userId, range),
         null,
