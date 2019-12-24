@@ -50,7 +50,7 @@ export abstract class SocketService {
         : null,
     };
 
-    logger.log('debug', `[${this.socket.id}]@[${roomId ?? 'session'}] server emitted: ${action}`);
+    logger.log('debug', `[${this.socket.id}]@[${roomId}] server emitted: ${action}`);
 
     if (roomId) {
       this.io.in(roomId).emit(action, packet);

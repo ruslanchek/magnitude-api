@@ -12,14 +12,12 @@ interface IEntities {
 export let entities: IEntities;
 let connection: Mongoose;
 
-export async function getConnection(): Promise<Mongoose> {
+export async function getDbConnection(): Promise<Mongoose> {
   if (!connection) {
     connection = await connect(MONGO_URL, {
       useNewUrlParser: true,
-      autoReconnect: true,
-      reconnectInterval: 3000,
-      reconnectTries: Infinity,
-      useUnifiedTopology: false,
+      autoReconnect: false,
+      useUnifiedTopology: true,
       useCreateIndex: true,
       autoIndex: true,
     });

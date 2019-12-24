@@ -5,14 +5,14 @@ const consoleFormat = winston.format.combine(
     all: true,
   }),
   winston.format.timestamp({
-    format: 'HH:MM:SS',
+    format: 'HH:mm:ss',
   }),
   winston.format.printf(info => `[${info.level}] ${info.timestamp} ${info.message}`),
 );
 
 const fileFormat = winston.format.combine(
   winston.format.timestamp({
-    format: 'YY-MM-DD HH:MM:SS',
+    format: 'YY-MM-DD HH:mm:ss',
   }),
   winston.format.printf(info => `[${info.level.toUpperCase()}] ${info.timestamp} ${info.message}`),
 );
