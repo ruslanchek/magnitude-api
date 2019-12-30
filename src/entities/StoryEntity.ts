@@ -33,19 +33,4 @@ export class UserEntity extends Entity<IEntityStoryServer, TEntityStoryDocument,
 
     return shared;
   }
-
-  public async getById(id: string, select?: Array<keyof IEntityStoryServer>): Promise<TEntityStoryDocument | null> {
-    try {
-      return await this.model.findOne(
-        {
-          _id: id,
-        },
-        select,
-      );
-    } catch (e) {
-      logger.log('error', e.message);
-    }
-
-    return null;
-  }
 }

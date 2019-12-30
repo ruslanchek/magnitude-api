@@ -70,19 +70,4 @@ export class ProjectEntity extends Entity<IEntityProjectServer, TEntityProjectDo
 
     return null;
   }
-
-  public async getById(id: string, select?: Array<keyof IEntityProjectServer>): Promise<TEntityProjectDocument | null> {
-    try {
-      return await this.model.findOne(
-        {
-          _id: id,
-        },
-        select,
-      );
-    } catch (e) {
-      logger.log('error', e.message);
-    }
-
-    return null;
-  }
 }

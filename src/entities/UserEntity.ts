@@ -42,21 +42,6 @@ export class UserEntity extends Entity<IEntityUserServer, TEntityUserDocument, I
     return shared;
   }
 
-  public async getById(id: string, select?: Array<keyof IEntityUserServer>): Promise<TEntityUserDocument | null> {
-    try {
-      return await this.model.findOne(
-        {
-          _id: id,
-        },
-        select,
-      );
-    } catch (e) {
-      logger.log('error', e.message);
-    }
-
-    return null;
-  }
-
   public async getByEmail(email: string, select?: Array<keyof IEntityUserServer>): Promise<TEntityUserDocument | null> {
     try {
       return await this.model.findOne(
