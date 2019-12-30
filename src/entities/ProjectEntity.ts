@@ -85,15 +85,4 @@ export class ProjectEntity extends Entity<IEntityProjectServer, TEntityProjectDo
 
     return null;
   }
-
-  public async create(data: Partial<IEntityProjectServer>): Promise<TEntityProjectDocument | null> {
-    try {
-      const newProject = new this.model(data);
-      return await newProject.save();
-    } catch (e) {
-      logger.log('error', e.message);
-    }
-
-    return null;
-  }
 }

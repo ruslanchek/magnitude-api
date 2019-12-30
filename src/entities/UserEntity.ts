@@ -7,6 +7,8 @@ interface IEntityUserServer {
   id: string;
   email: string;
   passwordHash: string;
+  projectsOwnedOf: string[];
+  projectsInvitedTo: string[];
 }
 
 export type TEntityUserDocument = IEntityUserServer & Document;
@@ -66,17 +68,6 @@ export class UserEntity extends Entity<IEntityUserServer, TEntityUserDocument, I
     } catch (e) {
       logger.log('error', e.message);
     }
-    return null;
-  }
-
-  public async create(data: Partial<IEntityUserServer>): Promise<TEntityUserDocument | null> {
-    try {
-      const newUser = new this.model(data);
-      return await newUser.save();
-    } catch (e) {
-      logger.log('error', e.message);
-    }
-
     return null;
   }
 }
