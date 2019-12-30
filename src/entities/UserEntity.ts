@@ -16,8 +16,8 @@ export type TEntityUserDocument = IEntityUserServer & Document;
 export class UserEntity extends Entity<IEntityUserServer, TEntityUserDocument, IEntityUserShared> {
   protected readonly schema = new Schema(
     {
-      email: { type: String, required: true, unique: true },
-      passwordHash: { type: String, required: true, select: false },
+      email: { type: Schema.Types.String, required: true, unique: true },
+      passwordHash: { type: Schema.Types.String, required: true, select: false },
       projectsOwnedOf: [{ type: Schema.Types.ObjectId, ref: 'Project' }],
       projectsInvitedTo: [{ type: Schema.Types.ObjectId, ref: 'Project' }],
     },

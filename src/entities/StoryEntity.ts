@@ -5,15 +5,16 @@ import { IEntityShared } from '@ruslanchek/magnitude-shared';
 
 interface IEntityStoryServer {
   id: string;
-  email: string;
-  passwordHash: string;
+  title: string;
 }
 
 export type TEntityStoryDocument = IEntityStoryServer & Document;
 
 export class UserEntity extends Entity<IEntityStoryServer, TEntityStoryDocument, IEntityShared> {
   protected readonly schema = new Schema(
-    {},
+    {
+      title: Schema.Types.String,
+    },
     {
       timestamps: this.defaultSchemaTimestamps,
     },

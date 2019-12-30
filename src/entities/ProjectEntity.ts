@@ -17,7 +17,7 @@ export type TEntityProjectDocument = IEntityProjectServer & Document;
 export class ProjectEntity extends Entity<IEntityProjectServer, TEntityProjectDocument, IEntityProjectShared> {
   protected readonly schema = new Schema(
     {
-      title: { type: String, required: true },
+      title: { type: Schema.Types.String, required: true },
       owner: { type: Schema.Types.ObjectId, ref: 'User', required: true },
       invitees: [{ type: Schema.Types.ObjectId, ref: 'User' }],
     },
