@@ -1,7 +1,7 @@
 import { Document, Schema } from 'mongoose';
 import { logger } from '../helpers/logger';
 import { Entity } from './Entity';
-import { IEntityShared } from '@ruslanchek/magnitude-shared';
+import { IEntityStoryShared } from '@ruslanchek/magnitude-shared';
 
 interface IEntityStoryServer {
   id: string;
@@ -10,7 +10,7 @@ interface IEntityStoryServer {
 
 export type TEntityStoryDocument = IEntityStoryServer & Document;
 
-export class UserEntity extends Entity<IEntityStoryServer, TEntityStoryDocument, IEntityShared> {
+export class UserEntity extends Entity<IEntityStoryServer, TEntityStoryDocument, IEntityStoryShared> {
   protected readonly schema = new Schema(
     {
       title: Schema.Types.String,
@@ -22,7 +22,7 @@ export class UserEntity extends Entity<IEntityStoryServer, TEntityStoryDocument,
 
   protected readonly model = this.connection.model<IEntityStoryServer & Document>('User', this.schema);
 
-  makeSharedEntity(document: IEntityStoryServer & Document): IEntityShared {
+  makeSharedEntity(document: IEntityStoryServer & Document): IEntityStoryShared {
     const shared = document.toObject();
 
     shared.id = shared._id;
