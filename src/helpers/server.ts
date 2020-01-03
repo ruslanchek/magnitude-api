@@ -34,6 +34,10 @@ export async function createServer(): Promise<void> {
     startExpressServices(expressApp);
     startIoServices(ioServer);
 
+    expressApp.get('/health-check', (req, res) => {
+      res.send('OK');
+    });
+
     server.listen(PORT, HOST, () => {
       logger.log('info', `IO Server is listening on ${ioProtocol}://${HOST}:${PORT}`);
       logger.log('info', `Express App is listening on ${httpProtocol}://${HOST}:${PORT}`);
