@@ -1,12 +1,8 @@
 import { Document, Schema } from 'mongoose';
-import { logger } from '../helpers/logger';
 import { Entity } from './Entity';
 import { IEntityStoryShared } from '@ruslanchek/magnitude-shared';
 
-interface IEntityStoryServer {
-  id: string;
-  title: string;
-}
+interface IEntityStoryServer extends IEntityStoryShared {}
 
 export type TEntityStoryDocument = IEntityStoryServer & Document;
 

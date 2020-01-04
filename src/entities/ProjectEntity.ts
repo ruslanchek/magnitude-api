@@ -3,14 +3,7 @@ import { logger } from '../helpers/logger';
 import { Entity } from './Entity';
 import { IEntityProjectShared } from '@ruslanchek/magnitude-shared';
 
-interface IEntityProjectServer {
-  id: string;
-  title: string;
-  owner: string;
-  invitees: string[];
-  updatedAt: Date;
-  createdAt: Date;
-}
+interface IEntityProjectServer extends IEntityProjectShared {}
 
 export type TEntityProjectDocument = IEntityProjectServer & Document;
 
