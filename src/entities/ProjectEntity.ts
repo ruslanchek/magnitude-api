@@ -13,6 +13,7 @@ export class ProjectEntity extends Entity<IEntityProjectServer, TEntityProjectDo
       title: { type: Schema.Types.String, required: true },
       owner: { type: Schema.Types.ObjectId, ref: 'User', required: true },
       invitees: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+      tags: [{ type: Schema.Types.ObjectId, ref: 'Tag', title: Schema.Types.Number }],
     },
     {
       timestamps: this.defaultSchemaTimestamps,
