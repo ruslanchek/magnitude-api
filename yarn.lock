@@ -18,10 +18,10 @@
     esutils "^2.0.2"
     js-tokens "^4.0.0"
 
-"@ruslanchek/magnitude-shared@^0.0.41":
-  version "0.0.41"
-  resolved "https://npm.pkg.github.com/download/@ruslanchek/magnitude-shared/0.0.41/14b028df850dc15f148f3fd7a488691840e9150fce599ad48f1d4f6661eb7bbf#0bbf1ed146bb2d4d449e89c538815bc1cda4b802"
-  integrity sha512-XQR0dqPC5NssOVDLzthzwleh/OgMUJUhX6+zx2cAgepVnB7QAjoxkVlVj6kfGMiZtEqHuS2j76T1pFmrJUU9xA==
+"@ruslanchek/magnitude-shared@^0.0.42":
+  version "0.0.42"
+  resolved "https://npm.pkg.github.com/download/@ruslanchek/magnitude-shared/0.0.42/078dc49ff48ead558a8a5b2c2635f46b1a0bef1dac707e9aba3c7b2737abf221#443a89e335512a4e13fcea2e3ea9345adc279dd5"
+  integrity sha512-31n4wzZKcltGdmw7Co7xI4kS0fXuT8Nggoq7BFGF0mwa1/cJBP0vrBIt+Al9qepd7NLV78KwOzTzMzIOveH7yw==
 
 "@types/bcrypt@^3.0.0":
   version "3.0.0"
