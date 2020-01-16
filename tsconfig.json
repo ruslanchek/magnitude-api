@@ -1,16 +1,18 @@
 {
   "compilerOptions": {
     "module": "commonjs",
-    "declaration": true,
+    "declaration": false,
     "removeComments": false,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "esModuleInterop": true,
-    "target": "es2017",
+    "target": "es2016",
     "sourceMap": true,
+    "rootDir": "src",
     "outDir": "build",
-    "incremental": true,
-    "strict": true
+    "incremental": false,
+    "strict": false
   },
+  "include": ["src/**/*"],
   "exclude": ["node_modules", "build"]
 }
