@@ -7,7 +7,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "ts-node-dev --cls --respawn ./src",
-    "build": "tsc --build"
+    "build": "rm -rf build && tsc"
   },
   "husky": {
     "hooks": {
